@@ -52,10 +52,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-//        HttpResponse<String> response = Unirest.get("https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=bojack&country=uk")
-//                .header("x-rapidapi-host", "utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com")
-//                .header("x-rapidapi-key", "402dce7785mshe730c925b64cc64p13f8d3jsn8ebc10c3980e")
-//                .asString();
     }
 
     private StringRequest searchNameStringRequest(String nameSearch) {
@@ -89,9 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 }) {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String>  headers = new HashMap<String, String>();
-                    headers.put("x-rapidapi-host", "utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com");
-                    headers.put("x-rapidapi-key", "402dce7785mshe730c925b64cc64p13f8d3jsn8ebc10c3980e");
+                    Map<String, String>  headers = new HashMap<String, String>(
 
                     return headers;
                 }
