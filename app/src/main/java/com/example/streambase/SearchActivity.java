@@ -2,8 +2,10 @@ package com.example.streambase;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -54,6 +56,14 @@ public class SearchActivity extends AppCompatActivity {
                     Toast.makeText(SearchActivity.this, "No movie specified", Toast.LENGTH_LONG).show();
                 }
 
+            }
+        });
+
+        listOfResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(SearchActivity.this, MediaInfoActivity.class);
+                startActivity(intent);
             }
         });
     }
