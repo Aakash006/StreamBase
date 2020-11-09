@@ -3,10 +3,13 @@ package com.example.streambase;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
@@ -22,12 +25,12 @@ import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MediaInfoActivity extends AppCompatActivity {
     private TextView name;
     private ImageView image;
     private ListView services;
+    private Typeface typeface;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,6 +45,7 @@ public class MediaInfoActivity extends AppCompatActivity {
         services = (ListView) findViewById(R.id.services);
         String title = "";
         String imageUrl = "";
+        typeface = getResources().getFont(R.font.palanquin_regular);
 
         try {
             JSONObject object = new JSONObject(selected);
@@ -55,7 +59,22 @@ public class MediaInfoActivity extends AppCompatActivity {
                 serviceList.add(movieOrShow.getString("display_name"));
             }
 
-            ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, serviceList);
+            ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, serviceList) {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent){
+                    /// Get the Item from ListView
+                    View view = super.getView(position, convertView, parent);
+
+                    TextView tv = (TextView) view.findViewById(android.R.id.text1);
+
+                    // Set the text size 25 dip for ListView each item
+                    tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20);
+                    tv.setTypeface(typeface);
+
+                    // Return the view
+                    return view;
+                }
+            };
             services.setAdapter(adapter);
         } catch (JSONException e) {
             e.printStackTrace();

@@ -3,8 +3,11 @@ package com.example.streambase;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -36,6 +39,7 @@ public class SearchActivity extends AppCompatActivity {
     ListView listOfResults;
     private RequestQueue queue;
     private JSONArray cache;
+    private Typeface typeface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,7 @@ public class SearchActivity extends AppCompatActivity {
         searchBtn = (Button) findViewById(R.id.searchBtn);
         listOfResults = (ListView) findViewById(R.id.listOfResults);
         queue = Volley.newRequestQueue(this);
+        typeface = getResources().getFont(R.font.palanquin_regular);
 
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,7 +97,22 @@ public class SearchActivity extends AppCompatActivity {
                                 moviesOrShows.add(movieOrShow.getString("name"));
                             }
 
-                            ListAdapter adapter = new ArrayAdapter<>(SearchActivity.this, android.R.layout.simple_list_item_1, moviesOrShows);
+                            ListAdapter adapter = new ArrayAdapter<String>(SearchActivity.this, android.R.layout.simple_list_item_1, moviesOrShows) {
+                                @Override
+                                public View getView(int position, View convertView, ViewGroup parent){
+                                    /// Get the Item from ListView
+                                    View view = super.getView(position, convertView, parent);
+
+                                    TextView tv = (TextView) view.findViewById(android.R.id.text1);
+
+                                    // Set the text size 25 dip for ListView each item
+                                    tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20);
+                                    tv.setTypeface(typeface);
+
+                                    // Return the view
+                                    return view;
+                                }
+                            };
                             listOfResults.setAdapter(adapter);
 
                         } catch (JSONException e) {
