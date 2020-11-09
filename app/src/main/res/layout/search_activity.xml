@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_gravity="center_horizontal"
-    android:background="@drawable/background">
+    android:layout_gravity="center_horizontal">
 
     <Button
         android:id="@+id/backBtn"
@@ -16,7 +15,6 @@
         android:textColor="#ffffff"
         android:layout_marginLeft="10dp"
         android:textSize="20sp"
-        android:onClick="backHome"
         android:text="@string/backHome"/>
 
     <LinearLayout
@@ -34,6 +32,8 @@
             android:background="@drawable/search_bar"
             android:fontFamily="@font/palanquin_regular"
             android:paddingLeft="20sp"
+            android:inputType="text"
+            android:maxLines="1"
             android:textSize="25sp" />
 
         <ImageButton

@@ -83,6 +83,15 @@ public class SearchActivity extends AppCompatActivity {
                 }
             }
         });
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SearchActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private StringRequest searchNameStringRequest(String nameSearch) {
@@ -142,10 +151,5 @@ public class SearchActivity extends AppCompatActivity {
                 return headers;
             }
         };
-    }
-
-    public void backHome(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
     }
 }

@@ -11,6 +11,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -31,6 +32,7 @@ public class MediaInfoActivity extends AppCompatActivity {
     private ImageView image;
     private ListView services;
     private Typeface typeface;
+    private Button backBtn;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,9 +45,19 @@ public class MediaInfoActivity extends AppCompatActivity {
         name = (TextView) findViewById(R.id.mediaName);
         image = (ImageView) findViewById(R.id.mediaImage);
         services = (ListView) findViewById(R.id.services);
+        backBtn = (Button) findViewById(R.id.backBtn);
         String title = "";
         String imageUrl = "";
         typeface = getResources().getFont(R.font.palanquin_regular);
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MediaInfoActivity.this, SearchActivity.class);
+                startActivity(intent);
+            }
+        });
 
         try {
             JSONObject object = new JSONObject(selected);
@@ -106,10 +118,5 @@ public class MediaInfoActivity extends AppCompatActivity {
             super.onPostExecute(result);
             image.setImageBitmap(result);
         }
-    }
-
-    public void backToSearch(View view) {
-        Intent intent = new Intent(this, SearchActivity.class);
-        startActivity(intent);
     }
 }

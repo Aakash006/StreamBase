@@ -2,4 +2,5 @@
     <string name="app_name">StreamBase</string>
     <string name="backSearch"><![CDATA[< Search]]></string>
     <string name="backHome"><![CDATA[< Home]]></string>
+    <string name="find_movie_or_show">Find: Movie or Show</string>
 </resources>

@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_gravity="center_horizontal"
-    android:background="@drawable/background">
+    android:layout_gravity="center_horizontal">
         <Button
             android:id="@+id/backBtn"
             android:layout_width="100dp"
@@ -16,7 +15,6 @@
             android:textColor="#ffffff"
             android:layout_marginLeft="10dp"
             android:textSize="20sp"
-            android:onClick="backToSearch"
             android:text="@string/backSearch"/>
 
         <TextView
