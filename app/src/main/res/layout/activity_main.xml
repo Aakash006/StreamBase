@@ -12,11 +12,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
-        android:textSize="40dp"
+        android:background="@drawable/rounded_corner"
         android:fontFamily="@font/palanquin_dark"
-        android:gravity="top"
+        android:gravity="center"
         android:text="@string/app_name"
-        android:textAppearance="@style/streambase" />
+        android:padding="5dp"
+        android:includeFontPadding="false"
+        android:textAlignment="center"
+        android:textAppearance="@style/streambase"
+        android:textSize="45dp" />
 
     <Button
         android:id="@+id/searchPageBtn"
@@ -24,6 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="30dp"
+        android:textSize="20sp"
         android:fontFamily="@font/palanquin_regular"
         android:text="Find: Movie | Show" />
 
