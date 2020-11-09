@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -35,8 +36,9 @@ import java.util.Map;
 
 public class SearchActivity extends AppCompatActivity {
     EditText search;
-    Button searchBtn;
+    ImageButton searchBtn;
     ListView listOfResults;
+    Button backBtn;
     private RequestQueue queue;
     private JSONArray cache;
     private Typeface typeface;
@@ -47,7 +49,8 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.search_activity);
 
         search = (EditText) findViewById(R.id.search);
-        searchBtn = (Button) findViewById(R.id.searchBtn);
+        searchBtn = (ImageButton) findViewById(R.id.searchBtn);
+        backBtn = (Button) findViewById(R.id.backBtn);
         listOfResults = (ListView) findViewById(R.id.listOfResults);
         queue = Volley.newRequestQueue(this);
         typeface = getResources().getFont(R.font.palanquin_regular);
@@ -64,6 +67,8 @@ public class SearchActivity extends AppCompatActivity {
 
             }
         });
+
+        listOfResults.setVisibility(View.INVISIBLE);
 
         listOfResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -113,6 +118,7 @@ public class SearchActivity extends AppCompatActivity {
                                     return view;
                                 }
                             };
+                            listOfResults.setVisibility(View.VISIBLE);
                             listOfResults.setAdapter(adapter);
 
                         } catch (JSONException e) {
@@ -136,5 +142,10 @@ public class SearchActivity extends AppCompatActivity {
                 return headers;
             }
         };
+    }
+
+    public void backHome(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }

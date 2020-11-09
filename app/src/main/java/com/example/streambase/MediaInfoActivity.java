@@ -107,4 +107,9 @@ public class MediaInfoActivity extends AppCompatActivity {
             image.setImageBitmap(result);
         }
     }
+
+    public void backToSearch(View view) {
+        Intent intent = new Intent(this, SearchActivity.class);
+        startActivity(intent);
+    }
 }

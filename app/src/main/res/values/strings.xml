@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">StreamBase</string>
+    <string name="backSearch"><![CDATA[< Search]]></string>
+    <string name="backHome"><![CDATA[< Home]]></string>
 </resources>
