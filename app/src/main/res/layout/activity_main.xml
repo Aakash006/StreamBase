@@ -4,27 +4,22 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:orientation="vertical">
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="vertical"
-        android:layout_gravity="center_horizontal">
         <TextView
             android:id="@+id/streambase"
-            android:layout_width="259dp"
-            android:layout_height="87dp"
-            android:layout_marginLeft="75dp"
-            android:layout_marginTop="1dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:text="@string/app_name"
             android:textAppearance="@style/streambase"
-            android:gravity="top"
-            />
+            android:layout_gravity="center_horizontal"
+            android:gravity="top"/>
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:id="@+id/searchPageBtn"
+            android:layout_gravity="center_horizontal"
             android:text="Find: Movie | Show"/>
-    </LinearLayout>
 
 </LinearLayout>

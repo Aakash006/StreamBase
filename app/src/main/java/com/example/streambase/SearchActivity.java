@@ -35,6 +35,7 @@ public class SearchActivity extends AppCompatActivity {
     Button searchBtn;
     ListView listOfResults;
     private RequestQueue queue;
+    private JSONArray cache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +63,14 @@ public class SearchActivity extends AppCompatActivity {
         listOfResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(SearchActivity.this, MediaInfoActivity.class);
-                startActivity(intent);
+                try {
+                    JSONObject selected = cache.getJSONObject(position);
+                    Intent intent = new Intent(SearchActivity.this, MediaInfoActivity.class);
+                    intent.putExtra("selected", selected.toString());
+                    startActivity(intent);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -77,6 +84,7 @@ public class SearchActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         try {
                             JSONObject result = new JSONObject(response);
+                            cache = result.getJSONArray("results");
                             JSONArray results = result.getJSONArray("results");
                             ArrayList<String> moviesOrShows = new ArrayList<>();
                             for (int i = 0; i < results.length(); i++) {
