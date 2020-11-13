@@ -3,35 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/streambase"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:fontFamily="@font/palanquin_dark"
-        android:gravity="center"
-        android:text="@string/app_name"
-        android:padding="5dp"
-        android:includeFontPadding="false"
-        android:textAlignment="center"
-        android:textAppearance="@style/streambase"
-        android:textSize="45dp" />
+    android:orientation="vertical"
+    android:gravity="bottom"
+    android:background="@color/background">
 
     <Button
-        android:id="@+id/searchPageBtn"
+        android:id="@+id/searchPageBtl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:textSize="20sp"
-        android:fontFamily="@font/palanquin_regular"
-        android:background="@drawable/button"
-        android:textColor="#ffffff"
-        android:paddingLeft="10sp"
-        android:paddingRight="10sp"
-        android:text="@string/find_movie_or_show" />
-
+        android:layout_gravity="center"
+        android:textColor="#FFFFFF"
+        android:text="@string/search"
+        android:background="@drawable/rounded_button"/>
 </LinearLayout>

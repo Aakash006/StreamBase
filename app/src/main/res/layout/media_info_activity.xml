@@ -5,17 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_gravity="center_horizontal">
-        <Button
-            android:id="@+id/backBtn"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button"
-            android:fontFamily="@font/palanquin_dark"
-            android:textColor="#ffffff"
-            android:layout_marginLeft="10dp"
-            android:textSize="20sp"
-            android:text="@string/backSearch"/>
+
 
         <TextView
             android:id="@+id/mediaName"
@@ -25,9 +15,7 @@
             android:layout_marginTop="10dp"
             android:paddingLeft="10sp"
             android:paddingRight="10sp"
-            android:fontFamily="@font/palanquin_dark"
             android:textColor="#000000"
-            android:background="@drawable/rounded_corner"
             android:textSize="30sp" />
 
         <ImageView

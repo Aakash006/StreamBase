@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.method.KeyListener;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -36,9 +39,7 @@ import java.util.Map;
 
 public class SearchActivity extends AppCompatActivity {
     EditText search;
-    ImageButton searchBtn;
     ListView listOfResults;
-    Button backBtn;
     private RequestQueue queue;
     private JSONArray cache;
     private Typeface typeface;
@@ -49,53 +50,38 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.search_activity);
 
         search = (EditText) findViewById(R.id.search);
-        searchBtn = (ImageButton) findViewById(R.id.searchBtn);
-        backBtn = (Button) findViewById(R.id.backBtn);
         listOfResults = (ListView) findViewById(R.id.listOfResults);
         queue = Volley.newRequestQueue(this);
         typeface = getResources().getFont(R.font.palanquin_regular);
 
-        searchBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!search.getText().toString().equals("")) {
-                    StringRequest getMovie = searchNameStringRequest(search.getText().toString());
-                    queue.add(getMovie);
-                } else {
-                    Toast.makeText(SearchActivity.this, "No movie specified", Toast.LENGTH_LONG).show();
-                }
-
+        search.setOnKeyListener((view, i, keyEvent) -> {
+            // if Enter key is pressed invoke Volley
+            if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && i == KeyEvent.KEYCODE_ENTER) {
+                StringRequest getMovie = searchNameStringRequest(search.getText().toString());
+                queue.add(getMovie);
+                return true;
             }
+            return false;
         });
+
 
         listOfResults.setVisibility(View.INVISIBLE);
 
-        listOfResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                try {
-                    JSONObject selected = cache.getJSONObject(position);
-                    Intent intent = new Intent(SearchActivity.this, MediaInfoActivity.class);
-                    intent.putExtra("selected", selected.toString());
-                    startActivity(intent);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        backBtn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SearchActivity.this, MainActivity.class);
+        listOfResults.setOnItemClickListener((parent, view, position, id) -> {
+            try {
+                JSONObject selected = cache.getJSONObject(position);
+                Intent intent = new Intent(SearchActivity.this, MediaInfoActivity.class);
+                intent.putExtra("selected", selected.toString());
                 startActivity(intent);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         });
     }
 
     private StringRequest searchNameStringRequest(String nameSearch) {
         String url = getString(R.string.url) + nameSearch + "&country=ca";
+        // ERROR
         return new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     // SUCCESS
@@ -135,17 +121,13 @@ public class SearchActivity extends AppCompatActivity {
                         }
                     }
                 },
-                new Response.ErrorListener() {
-                    // ERROR
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // display a simple message on the screen
-                        Toast.makeText(SearchActivity.this, "Utelly is not responding", Toast.LENGTH_LONG).show();
-                    }
+                (Response.ErrorListener) error -> {
+                    // display a simple message on the screen
+                    Toast.makeText(SearchActivity.this, "Utelly is not responding", Toast.LENGTH_LONG).show();
                 }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String>  headers = new HashMap<String, String>();
+            public Map<String, String> getHeaders() {
+                Map<String, String>  headers = new HashMap<>();
                 headers.put("x-rapidapi-host", getString(R.string.host));
                 headers.put("x-rapidapi-key", getString(R.string.key));
                 return headers;
