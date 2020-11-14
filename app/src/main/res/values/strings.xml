@@ -3,4 +3,6 @@
     <string name="backSearch"><![CDATA[< Search]]></string>
     <string name="backHome"><![CDATA[< Home]]></string>
     <string name="search">Search</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
 </resources>

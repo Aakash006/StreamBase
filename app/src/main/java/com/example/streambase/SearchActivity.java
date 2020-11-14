@@ -52,7 +52,7 @@ public class SearchActivity extends AppCompatActivity {
         search = (EditText) findViewById(R.id.search);
         listOfResults = (ListView) findViewById(R.id.listOfResults);
         queue = Volley.newRequestQueue(this);
-        typeface = getResources().getFont(R.font.palanquin_regular);
+        typeface = getResources().getFont(R.font.roboto_black);
 
         search.setOnKeyListener((view, i, keyEvent) -> {
             // if Enter key is pressed invoke Volley
