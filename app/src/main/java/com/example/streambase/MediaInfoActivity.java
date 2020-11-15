@@ -3,6 +3,7 @@ package com.example.streambase;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -46,8 +47,7 @@ public class MediaInfoActivity extends AppCompatActivity {
         services = (ListView) findViewById(R.id.services);
         String title = "";
         String imageUrl = "";
-        typeface = getResources().getFont(R.font.palanquin_regular);
-
+        typeface = getResources().getFont(R.font.roboto_black);
 
 
         try {
@@ -70,8 +70,9 @@ public class MediaInfoActivity extends AppCompatActivity {
 
                     TextView tv = (TextView) view.findViewById(android.R.id.text1);
 
-                    // Set the text size 25 dip for ListView each item
+                    // Set the text size 20 dip for ListView each item
                     tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20);
+                    tv.setTextColor(Color.parseColor("#ffffff"));
                     tv.setTypeface(typeface);
 
                     // Return the view
