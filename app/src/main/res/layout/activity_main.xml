@@ -14,5 +14,5 @@
         android:layout_gravity="center"
         android:textColor="#FFFFFF"
         android:text="@string/search"
-        android:background="@drawable/rounded_button"/>
+        android:backgroundTint="@color/colorSecondaryAccent"/>
 </LinearLayout>
