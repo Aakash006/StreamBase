@@ -19,7 +19,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:background="@color/background"
+                    android:background="@color/colorPrimary"
                     android:minHeight="?attr/actionBarSize"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
@@ -28,7 +28,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/rounded_button"
+                    android:backgroundTint="@color/colorSecondaryAccent"
                     android:fontFamily="@font/roboto_medium"
                     android:text="@string/search"
                     android:textColor="#FFFFFF" />
