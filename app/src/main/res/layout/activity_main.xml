@@ -40,8 +40,7 @@
             android:id="@+id/navView"
             android:elevation="4dp"
             android:layout_gravity="start"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:background="@color/secondaryBackground"
             app:headerLayout="@layout/menu_header"
             app:menu="@menu/main_menu"/>
 

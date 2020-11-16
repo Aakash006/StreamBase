@@ -1,5 +1,6 @@
 package com.example.streambase;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -16,10 +18,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,6 +37,9 @@ public class MediaInfoActivity extends AppCompatActivity {
     private ImageView image;
     private ListView services;
     private Typeface typeface;
+    private ArrayAdapter mAdapter;
+    private ArrayList<String> serviceList;
+    private ArrayList<String> serviceIconUrls;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,21 +52,54 @@ public class MediaInfoActivity extends AppCompatActivity {
         name = (TextView) findViewById(R.id.mediaName);
         image = (ImageView) findViewById(R.id.mediaImage);
         services = (ListView) findViewById(R.id.services);
+
+        Activity mActivity = this;
+        typeface = getResources().getFont(R.font.roboto_black);
+        setServices(selected);
+        mAdapter = new ArrayAdapter<String>(this, R.layout.services_cards, serviceList) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                // Get the view
+                LayoutInflater inflater = mActivity.getLayoutInflater();
+                View itemView = inflater.inflate(R.layout.services_cards,null,true);
+
+                // Get current package name
+                String serviceName = serviceList.get(position);
+
+                // Get the relative layout
+                RelativeLayout relativeLayout = (RelativeLayout) itemView.findViewById(R.id.rl);
+
+                // Display the app package name
+                TextView serviceTxt = (TextView) itemView.findViewById(R.id.service_name);
+                serviceTxt.setText(serviceName);
+
+                // Get the card view
+                CardView cardView = (CardView) itemView.findViewById(R.id.card_view);
+
+                ImageView serviceIcon = (ImageView) findViewById(R.id.service_icon);
+                //String imageUrl = serviceIconUrls.get(position);
+                //setAppIcon(serviceIcon, imageUrl);
+                return itemView;
+            }
+        };
+
+        services.setAdapter(mAdapter);
+    }
+
+    public void setServices(String selected) {
         String title = "";
         String imageUrl = "";
-        typeface = getResources().getFont(R.font.roboto_black);
-
-
+        serviceList = new ArrayList<>();
         try {
             JSONObject object = new JSONObject(selected);
             title = object.getString("name");
             imageUrl = object.getString("picture");
 
             JSONArray servicesArray = object.getJSONArray("locations");
-            ArrayList<String> serviceList = new ArrayList<>();
             for (int i = 0; i < servicesArray.length(); i++) {
                 JSONObject movieOrShow = servicesArray.getJSONObject(i);
                 serviceList.add(movieOrShow.getString("display_name"));
+                //serviceIconUrls.add(movieOrShow.getString("icon"));
             }
 
             ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, serviceList) {
@@ -79,7 +119,7 @@ public class MediaInfoActivity extends AppCompatActivity {
                     return view;
                 }
             };
-            services.setAdapter(adapter);
+            //services.setAdapter(adapter);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -87,6 +127,10 @@ public class MediaInfoActivity extends AppCompatActivity {
         name.setText(title);
         SetImageTask task = new SetImageTask();
         task.execute(imageUrl);
+    }
+
+    public void setAppIcon(ImageView imageView, String url) {
+
     }
 
     class SetImageTask extends AsyncTask<String, Void, Bitmap> {
