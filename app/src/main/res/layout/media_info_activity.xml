@@ -16,8 +16,8 @@
             android:layout_marginTop="10dp"
             android:paddingLeft="10sp"
             android:paddingRight="10sp"
-            android:textColor="#ffffff"
-            android:fontFamily="@font/roboto_black"
+            android:textColor="#E1E1E1"
+            android:fontFamily="@font/roboto_medium"
             android:textSize="40sp" />
 
         <ImageView
