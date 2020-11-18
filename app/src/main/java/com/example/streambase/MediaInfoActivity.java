@@ -72,7 +72,11 @@ public class MediaInfoActivity extends AppCompatActivity {
 
                 // Display the app package name
                 TextView serviceTxt = (TextView) itemView.findViewById(R.id.service_name);
-                serviceTxt.setText(serviceName);
+                if (serviceName.equals("Amazon Prime Video")) {
+                    serviceTxt.setText("Prime Video");
+                } else {
+                    serviceTxt.setText(serviceName);
+                }
 
                 // Get the card view
                 CardView cardView = (CardView) itemView.findViewById(R.id.card_view);
