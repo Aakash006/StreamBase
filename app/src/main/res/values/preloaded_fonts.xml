@@ -3,7 +3,7 @@
     <array name="preloaded_fonts" translatable="false">
         <item>@font/palanquin_dark</item>
         <item>@font/palanquin_medium</item>
-        <item>@font/roboto_medium</item>
+        <item>@font/roboto_medium2</item>
         <item>@font/roboto_thin</item>
     </array>
 </resources>

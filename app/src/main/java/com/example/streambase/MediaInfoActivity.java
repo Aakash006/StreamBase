@@ -2,6 +2,7 @@ package com.example.streambase;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -61,7 +62,7 @@ public class MediaInfoActivity extends AppCompatActivity {
             public View getView(int position, View convertView, ViewGroup parent) {
                 // Get the view
                 LayoutInflater inflater = mActivity.getLayoutInflater();
-                View itemView = inflater.inflate(R.layout.services_cards,null,true);
+                View itemView = inflater.inflate(R.layout.services_cards, null, true);
 
                 // Get current package name
                 String serviceName = serviceList.get(position);
@@ -76,9 +77,11 @@ public class MediaInfoActivity extends AppCompatActivity {
                 // Get the card view
                 CardView cardView = (CardView) itemView.findViewById(R.id.card_view);
 
-                ImageView serviceIcon = (ImageView) findViewById(R.id.service_icon);
+                ImageView serviceIcon = (ImageView) itemView.findViewById(R.id.service_icon);
                 //String imageUrl = serviceIconUrls.get(position);
                 //setAppIcon(serviceIcon, imageUrl);
+                int icon = getServiceIcon(serviceName);
+                serviceIcon.setImageResource(icon);
                 return itemView;
             }
         };
@@ -99,19 +102,18 @@ public class MediaInfoActivity extends AppCompatActivity {
             for (int i = 0; i < servicesArray.length(); i++) {
                 JSONObject movieOrShow = servicesArray.getJSONObject(i);
                 serviceList.add(movieOrShow.getString("display_name"));
-                //serviceIconUrls.add(movieOrShow.getString("icon"));
             }
 
             ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, serviceList) {
                 @Override
-                public View getView(int position, View convertView, ViewGroup parent){
+                public View getView(int position, View convertView, ViewGroup parent) {
                     /// Get the Item from ListView
                     View view = super.getView(position, convertView, parent);
 
                     TextView tv = (TextView) view.findViewById(android.R.id.text1);
 
                     // Set the text size 20 dip for ListView each item
-                    tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20);
+                    tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
                     tv.setTextColor(Color.parseColor("#ffffff"));
                     tv.setTypeface(typeface);
 
@@ -129,8 +131,30 @@ public class MediaInfoActivity extends AppCompatActivity {
         task.execute(imageUrl);
     }
 
-    public void setAppIcon(ImageView imageView, String url) {
-
+    public int getServiceIcon(String name) {
+        int icon = 0;
+        name = name.toLowerCase();
+        switch (name) {
+            case "netflix":
+                icon = R.drawable.ic_netflix;
+                break;
+            case "itunes":
+                icon = R.drawable.ic_itunes;
+                break;
+            case "amazon prime video":
+                icon = R.drawable.ic_prime_video;
+                break;
+            case "google play":
+                icon = R.drawable.ic_google_play;
+                break;
+            case "disney+":
+                icon = R.drawable.ic_disney_plus;
+                break;
+            default:
+                icon = R.drawable.ic_not_found;
+                break;
+        }
+        return icon;
     }
 
     class SetImageTask extends AsyncTask<String, Void, Bitmap> {

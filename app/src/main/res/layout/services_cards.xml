@@ -30,8 +30,8 @@
 
             <ImageView
                 android:id="@+id/service_icon"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_margin="5dp" />
 
             <TextView
@@ -39,9 +39,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/service_icon"
-                android:fontFamily="@font/roboto_medium"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/roboto_medium2"
                 android:textColor="#000000"
-                android:textSize="30sp" />
+                android:textSize="35sp" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>
