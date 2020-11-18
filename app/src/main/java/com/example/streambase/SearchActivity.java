@@ -85,9 +85,13 @@ public class SearchActivity extends AppCompatActivity {
                             cache = result.getJSONArray("results");
                             JSONArray results = result.getJSONArray("results");
                             ArrayList<String> moviesOrShows = new ArrayList<>();
-                            for (int i = 0; i < results.length(); i++) {
-                                JSONObject movieOrShow = results.getJSONObject(i);
-                                moviesOrShows.add(movieOrShow.getString("name"));
+                            if (results.length() == 0) {
+                                moviesOrShows.add("No Results");
+                            } else {
+                                for (int i = 0; i < results.length(); i++) {
+                                    JSONObject movieOrShow = results.getJSONObject(i);
+                                    moviesOrShows.add(movieOrShow.getString("name"));
+                                }
                             }
 
                             ListAdapter adapter = new ArrayAdapter<String>(SearchActivity.this, android.R.layout.simple_list_item_1, moviesOrShows) {

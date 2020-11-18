@@ -150,6 +150,9 @@ public class MediaInfoActivity extends AppCompatActivity {
             case "disney+":
                 icon = R.drawable.ic_disney_plus;
                 break;
+            case "hulu":
+                icon = R.drawable.ic_hulu;
+                break;
             default:
                 icon = R.drawable.ic_not_found;
                 break;
