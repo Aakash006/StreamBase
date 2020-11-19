@@ -5,8 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.TypedValue;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -47,14 +48,28 @@ public class SearchActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         typeface = getResources().getFont(R.font.roboto_medium2);
 
-        search.setOnKeyListener((view, i, keyEvent) -> {
-            // if Enter key is pressed invoke Volley
-            if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && i == KeyEvent.KEYCODE_ENTER) {
-                StringRequest getMovie = searchNameStringRequest(search.getText().toString());
+
+//        search.setOnKeyListener((view, i, keyEvent) -> {
+//            // if Enter key is pressed invoke Volley
+//            if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && i == KeyEvent.KEYCODE_ENTER) {
+//                StringRequest getMovie = searchNameStringRequest(search.getText().toString());
+//                queue.add(getMovie);
+//                return true;
+//            }
+//            return false;
+//        });
+
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,int count) {
+                StringRequest getMovie = searchNameStringRequest(s.toString());
                 queue.add(getMovie);
-                return true;
             }
-            return false;
         });
 
 
