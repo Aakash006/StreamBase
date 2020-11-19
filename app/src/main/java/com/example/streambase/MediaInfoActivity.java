@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -18,10 +19,14 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
@@ -39,6 +44,7 @@ public class MediaInfoActivity extends AppCompatActivity {
     private ListView services;
     private Typeface typeface;
     private ArrayAdapter mAdapter;
+    private BottomNavigationView nav;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +65,10 @@ public class MediaInfoActivity extends AppCompatActivity {
         name = (TextView) findViewById(R.id.mediaName);
         image = (ImageView) findViewById(R.id.mediaImage);
         services = (ListView) findViewById(R.id.services);
+
+        nav = findViewById(R.id.bottom_nav);
+        nav.setSelectedItemId(R.id.nav_search);
+        nav.setOnNavigationItemSelectedListener(navLlistener);
 
         setLayout(mediaName, imageURL, list);
 
@@ -121,7 +131,7 @@ public class MediaInfoActivity extends AppCompatActivity {
         name.setText(mediaName);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.base_url))
+                .baseUrl(getString(R.string.utelly_base_url))
                 .build();
         UTellyAPI api = retrofit.create(UTellyAPI.class);
         Call<ResponseBody> call = api.getImage(imageURL);
@@ -172,4 +182,27 @@ public class MediaInfoActivity extends AppCompatActivity {
         }
         return icon;
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navLlistener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            Fragment selectedFragment = null;
+
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                case R.id.nav_search:
+                    startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                case R.id.nav_fav:
+                    startActivity(new Intent(getApplicationContext(), FavouriteActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+            }
+            return false;
+        }
+    };
 }

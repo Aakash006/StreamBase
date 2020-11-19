@@ -5,4 +5,7 @@
     <string name="search">Search</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
+    <string name="nav_favourite">Favourite</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_home">Home</string>
 </resources>

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -14,10 +15,13 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 
 import com.android.volley.RequestQueue;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 
@@ -41,17 +45,16 @@ public class SearchActivity extends AppCompatActivity {
     private Typeface typeface;
     private Retrofit retrofit;
     private MediaList mediaList;
+    private BottomNavigationView nav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity);
 
-        Toolbar mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mActionBarToolbar);
-        if (mActionBarToolbar != null) {
-            getSupportActionBar().setTitle(R.string.app_name);
-        }
+        nav = findViewById(R.id.bottom_nav);
+        nav.setSelectedItemId(R.id.nav_search);
+        nav.setOnNavigationItemSelectedListener(navLlistener);
 
         search = (EditText) findViewById(R.id.search);
         listOfResults = (ListView) findViewById(R.id.listOfResults);
@@ -61,7 +64,7 @@ public class SearchActivity extends AppCompatActivity {
             // if Enter key is pressed invoke Volley
             if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && i == KeyEvent.KEYCODE_ENTER) {
                 retrofit = new Retrofit.Builder()
-                        .baseUrl(getString(R.string.base_url))
+                        .baseUrl(getString(R.string.utelly_base_url))
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 fetchMedia(search.getText().toString());
@@ -97,7 +100,7 @@ public class SearchActivity extends AppCompatActivity {
 
         Map<String, String> headersMap = new HashMap<>();
         headersMap.put("x-rapidapi-host", getString(R.string.host));
-        headersMap.put("x-rapidapi-key", getString(R.string.key));
+        headersMap.put("x-rapidapi-key", getString(R.string.utelly_key));
 
         UTellyAPI api = retrofit.create(UTellyAPI.class);
         Call<MediaList> call = api.getMediaList(queryParametersMap, headersMap);
@@ -143,4 +146,27 @@ public class SearchActivity extends AppCompatActivity {
         listOfResults.setVisibility(View.VISIBLE);
         listOfResults.setAdapter(adapter);
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navLlistener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            Fragment selectedFragment = null;
+
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                case R.id.nav_search:
+                    startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                case R.id.nav_fav:
+                    startActivity(new Intent(getApplicationContext(), FavouriteActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+            }
+            return false;
+        }
+    };
 }

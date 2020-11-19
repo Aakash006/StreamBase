@@ -2,26 +2,26 @@ package com.example.streambase;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
-
+public class FavouriteActivity extends AppCompatActivity {
     private BottomNavigationView nav;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.favourite_activity);
 
         nav = findViewById(R.id.bottom_nav);
-        nav.setSelectedItemId(R.id.nav_home);
+        nav.setSelectedItemId(R.id.nav_fav);
         nav.setOnNavigationItemSelectedListener(navLlistener);
     }
 

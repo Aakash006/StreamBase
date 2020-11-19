@@ -1,46 +1,26 @@
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity"
-    android:orientation="vertical"
-    android:gravity="bottom"
-    android:background="@color/background"
-    tools:openDrawer="start">
+    android:background="@color/background">
 
-        <RelativeLayout
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:text="Trending"
+            android:textColor="#ffffff"
+            android:layout_centerHorizontal="true"/>
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_nav"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            app:menu="@menu/main_menu"
+            android:background="?android:attr/windowBackground"
+            android:layout_alignParentBottom="true"/>
 
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:background="@color/colorPrimary"
-                    android:minHeight="?attr/actionBarSize"
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
-
-                <Button
-                    android:id="@+id/searchPageBtl"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:background="@drawable/round_shape_btn"
-                    android:fontFamily="@font/roboto_medium2"
-                    android:text="@string/search"
-                    android:textColor="#FFFFFF" />
-        </RelativeLayout>
-
-        <com.google.android.material.navigation.NavigationView
-            android:layout_width="300dp"
-            android:layout_height="match_parent"
-            android:id="@+id/navView"
-            android:elevation="4dp"
-            android:layout_gravity="start"
-            app:headerLayout="@layout/menu_header"
-            app:menu="@menu/main_menu"/>
-
-</androidx.drawerlayout.widget.DrawerLayout>
+</RelativeLayout>

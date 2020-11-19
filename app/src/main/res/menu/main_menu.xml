@@ -8,13 +8,18 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:title="Home"
+            android:title="@string/nav_home"
             android:icon="@drawable/ic_baseline_home_24"/>
 
         <item
             android:id="@+id/nav_search"
-            android:title="Search"
+            android:title="@string/nav_search"
             android:icon="@drawable/ic_baseline_search_24"/>
+
+        <item
+            android:id="@+id/nav_fav"
+            android:title="@string/nav_favourite"
+            android:icon="@drawable/ic_baseline_favourite_24"/>
 
     </group>
 
