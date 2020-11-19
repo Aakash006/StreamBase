@@ -81,15 +81,20 @@ public class SearchActivity extends AppCompatActivity {
 
         listOfResults.setVisibility(View.INVISIBLE);
 
-        listOfResults.setOnItemClickListener((parent, view, position, id) -> {
-            try {
-                JSONObject selected = cache.getJSONObject(position);
-                Intent intent = new Intent(SearchActivity.this, MediaInfoActivity.class);
-                intent.putExtra("selected", selected.toString());
-                startActivity(intent);
-            } catch (JSONException e) {
-                e.printStackTrace();
+        listOfResults.setOnItemClickListener((adapterView, view, i, l) -> {
+            Intent intent = new Intent(SearchActivity.this, MediaInfoActivity.class);
+            String selectedItem = adapterView.getItemAtPosition(i).toString();
+            ArrayList<String> providers = new ArrayList<>();
+            for (Media m : mediaList.getMedia()) {
+                if(m.getName().equals(selectedItem)) {
+                    intent.putExtra("name", m.getName());
+                    intent.putExtra("imageURL", m.getImageURL());
+                    for(MediaContentProvider mc : m.getMediaContentProviderList()) providers.add(mc.getMediaContentProviderName());
+                    intent.putExtra("list", providers);
+                    break;
+                }
             }
+            startActivity(intent);
         });
     }
 
@@ -126,42 +131,24 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
-    public void createAdapter(List<String> moviesOrShows) {
+    private void createAdapter(List<String> moviesOrShows) {
         ListAdapter adapter = new ArrayAdapter<String>(SearchActivity.this, android.R.layout.simple_list_item_1, moviesOrShows) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent){
                 /// Get the Item from ListView
                 View view = super.getView(position, convertView, parent);
 
-                                    TextView tv = (TextView) view.findViewById(android.R.id.text1);
+                TextView tv = (TextView) view.findViewById(android.R.id.text1);
 
-                                    // Set the text size 25 dip for ListView each item
-                                    tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20);
-                                    tv.setTypeface(typeface);
+                // Set the text size 25 dip for ListView each item
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20);
+                tv.setTypeface(typeface);
 
-                                    // Return the view
-                                    return view;
-                                }
-                            };
-                            listOfResults.setVisibility(View.VISIBLE);
-                            listOfResults.setAdapter(adapter);
-
-                        } catch (JSONException e) {
-                            Toast.makeText(SearchActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                },
-                (Response.ErrorListener) error -> {
-                    // display a simple message on the screen
-                    Toast.makeText(SearchActivity.this, "Utelly is not responding", Toast.LENGTH_LONG).show();
-                }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String>  headers = new HashMap<>();
-                headers.put("x-rapidapi-host", getString(R.string.host));
-                headers.put("x-rapidapi-key", getString(R.string.key));
-                return headers;
+                // Return the view
+                return view;
             }
         };
+        listOfResults.setVisibility(View.VISIBLE);
+        listOfResults.setAdapter(adapter);
     }
 }
