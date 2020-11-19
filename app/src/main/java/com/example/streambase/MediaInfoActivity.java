@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 
 import org.json.JSONArray;
@@ -47,6 +49,12 @@ public class MediaInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.media_info_activity);
 
+        Toolbar mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mActionBarToolbar);
+        if (mActionBarToolbar != null) {
+            getSupportActionBar().setTitle(R.string.app_name);
+        }
+
         Intent intent = getIntent();
         String selected = intent.getStringExtra("selected");
 
@@ -68,7 +76,7 @@ public class MediaInfoActivity extends AppCompatActivity {
                 String serviceName = serviceList.get(position);
 
                 // Get the relative layout
-                RelativeLayout relativeLayout = (RelativeLayout) itemView.findViewById(R.id.rl);
+                LinearLayout relativeLayout = (LinearLayout) itemView.findViewById(R.id.rl);
 
                 // Display the app package name
                 TextView serviceTxt = (TextView) itemView.findViewById(R.id.service_name);

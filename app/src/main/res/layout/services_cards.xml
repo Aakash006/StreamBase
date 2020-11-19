@@ -21,17 +21,18 @@
         card_view:cardMaxElevation="6dp"
         card_view:contentPadding="5dp">
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/rl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="0dp"
-            android:padding="0dp">
+            android:padding="5dp"
+            android:gravity="center_vertical">
 
             <ImageView
                 android:id="@+id/service_icon"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_margin="5dp" />
 
             <TextView
@@ -39,11 +40,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/service_icon"
-                android:layout_marginTop="15dp"
                 android:layout_marginStart="10dp"
                 android:fontFamily="@font/roboto_medium2"
-                android:textColor="#000000"
-                android:textSize="30sp" />
-        </RelativeLayout>
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

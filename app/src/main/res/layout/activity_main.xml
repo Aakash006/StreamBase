@@ -28,7 +28,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:backgroundTint="@color/colorSecondaryAccent"
+                    android:background="@drawable/round_shape_btn"
                     android:fontFamily="@font/roboto_medium2"
                     android:text="@string/search"
                     android:textColor="#FFFFFF" />
@@ -40,7 +40,6 @@
             android:id="@+id/navView"
             android:elevation="4dp"
             android:layout_gravity="start"
-            android:background="@color/secondaryBackground"
             app:headerLayout="@layout/menu_header"
             app:menu="@menu/main_menu"/>
 

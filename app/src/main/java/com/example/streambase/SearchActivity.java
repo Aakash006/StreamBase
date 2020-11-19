@@ -1,6 +1,7 @@
 package com.example.streambase;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -42,6 +43,12 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity);
+
+        Toolbar mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mActionBarToolbar);
+        if (mActionBarToolbar != null) {
+            getSupportActionBar().setTitle(R.string.app_name);
+        }
 
         search = (EditText) findViewById(R.id.search);
         listOfResults = (ListView) findViewById(R.id.listOfResults);
