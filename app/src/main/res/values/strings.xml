@@ -8,4 +8,6 @@
     <string name="nav_favourite">Favourite</string>
     <string name="nav_search">Search</string>
     <string name="nav_home">Home</string>
+    <string name="favourites">Favourites</string>
+    <string name="trending">Trending</string>
 </resources>

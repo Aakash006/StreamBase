@@ -10,9 +10,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:text="Trending"
-            android:textColor="#ffffff"
+            android:layout_marginTop="30dp"
+            android:textSize="30sp"
+            android:text="@string/trending"
+            android:fontFamily="@font/roboto_medium"
+            android:textColor="#000000"
+            android:background="@drawable/rounded_corner"
             android:layout_centerHorizontal="true"/>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
