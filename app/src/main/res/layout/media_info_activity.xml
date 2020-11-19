@@ -1,37 +1,64 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".SearchActivity"
     android:orientation="vertical"
+    android:gravity="bottom"
     android:background="@color/background"
-    android:layout_gravity="center_horizontal">
+    tools:openDrawer="start">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:background="@color/colorPrimary"
+                    android:minHeight="?attr/actionBarSize"
+                    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_marginTop="65dp"
+                    android:layout_gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/mediaName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:paddingLeft="10sp"
+                            android:paddingRight="10sp"
+                            android:textColor="#E1E1E1"
+                            android:fontFamily="@font/roboto_medium2"
+                            android:textSize="24sp" />
+
+                        <ImageView
+                            android:id="@+id/mediaImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_gravity="center_horizontal"
+                            android:background="@drawable/image_background"/>
+
+                        <ListView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="15dp"
+                            android:layout_gravity="center_horizontal"
+                            android:id="@+id/services"/>
+                </LinearLayout>
+        </RelativeLayout>
 
 
-        <TextView
-            android:id="@+id/mediaName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="10sp"
-            android:paddingRight="10sp"
-            android:textColor="#E1E1E1"
-            android:fontFamily="@font/roboto_medium2"
-            android:textSize="40sp" />
-
-        <ImageView
-            android:id="@+id/mediaImage"
-            android:layout_width="300dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="18dp"
-            android:background="@drawable/image_background"/>
-
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/services"/>
-</LinearLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

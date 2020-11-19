@@ -11,4 +11,6 @@
     <color name="colorSecondaryDark">#ab003c</color>
     <color name="colorSecondaryAccent">#f73378</color>
 
+    <color name="white">#ffffff</color>
+
 </resources>

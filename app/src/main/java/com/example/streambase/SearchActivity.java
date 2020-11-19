@@ -1,6 +1,7 @@
 package com.example.streambase;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -40,9 +41,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SearchActivity extends AppCompatActivity {
     private static final String TAG = "SearchActivity";
-    
+
     EditText search;
     ListView listOfResults;
+    private RequestQueue queue;
+    private JSONArray cache;
     private Typeface typeface;
     private Retrofit retrofit;
     private MediaList mediaList;
@@ -51,6 +54,12 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity);
+
+        Toolbar mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mActionBarToolbar);
+        if (mActionBarToolbar != null) {
+            getSupportActionBar().setTitle(R.string.app_name);
+        }
 
         search = (EditText) findViewById(R.id.search);
         listOfResults = (ListView) findViewById(R.id.listOfResults);
@@ -72,20 +81,15 @@ public class SearchActivity extends AppCompatActivity {
 
         listOfResults.setVisibility(View.INVISIBLE);
 
-        listOfResults.setOnItemClickListener((adapterView, view, i, l) -> {
-            Intent intent = new Intent(SearchActivity.this, MediaInfoActivity.class);
-            String selectedItem = adapterView.getItemAtPosition(i).toString();
-            ArrayList<String> providers = new ArrayList<>();
-            for (Media m : mediaList.getMedia()) {
-                if(m.getName().equals(selectedItem)) {
-                    intent.putExtra("name", m.getName());
-                    intent.putExtra("imageURL", m.getImageURL());
-                    for(MediaContentProvider mc : m.getMediaContentProviderList()) providers.add(mc.getMediaContentProviderName());
-                    intent.putExtra("list", providers);
-                    break;
-                }
+        listOfResults.setOnItemClickListener((parent, view, position, id) -> {
+            try {
+                JSONObject selected = cache.getJSONObject(position);
+                Intent intent = new Intent(SearchActivity.this, MediaInfoActivity.class);
+                intent.putExtra("selected", selected.toString());
+                startActivity(intent);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            startActivity(intent);
         });
     }
 
@@ -129,17 +133,35 @@ public class SearchActivity extends AppCompatActivity {
                 /// Get the Item from ListView
                 View view = super.getView(position, convertView, parent);
 
-                TextView tv = (TextView) view.findViewById(android.R.id.text1);
+                                    TextView tv = (TextView) view.findViewById(android.R.id.text1);
 
-                // Set the text size 25 dip for ListView each item
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20);
-                tv.setTypeface(typeface);
+                                    // Set the text size 25 dip for ListView each item
+                                    tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20);
+                                    tv.setTypeface(typeface);
 
-                // Return the view
-                return view;
+                                    // Return the view
+                                    return view;
+                                }
+                            };
+                            listOfResults.setVisibility(View.VISIBLE);
+                            listOfResults.setAdapter(adapter);
+
+                        } catch (JSONException e) {
+                            Toast.makeText(SearchActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                },
+                (Response.ErrorListener) error -> {
+                    // display a simple message on the screen
+                    Toast.makeText(SearchActivity.this, "Utelly is not responding", Toast.LENGTH_LONG).show();
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String>  headers = new HashMap<>();
+                headers.put("x-rapidapi-host", getString(R.string.host));
+                headers.put("x-rapidapi-key", getString(R.string.key));
+                return headers;
             }
         };
-        listOfResults.setVisibility(View.VISIBLE);
-        listOfResults.setAdapter(adapter);
     }
 }
