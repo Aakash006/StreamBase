@@ -118,10 +118,10 @@ public class MediaInfoActivity extends AppCompatActivity {
 
 
         mAddToDBBtn.setOnClickListener(e -> {
-//            Log.d(TAG, "onCreate: " + mMediaName);
-//            Log.d(TAG, "onCreate: " + mImageURL);
-//            Log.d(TAG, "onCreate: " + mId);
-//            Log.d(TAG, "onCreate: " + mList.toString());
+            Log.d(TAG, "onCreate: " + mMediaName);
+            Log.d(TAG, "onCreate: " + mImageURL);
+            Log.d(TAG, "onCreate: " + mId);
+            Log.d(TAG, "onCreate: " + mList.toString());
             db.addRecord(mId, mMediaName, mImageURL, mList);
         });
     }

@@ -1,6 +1,7 @@
 package com.example.streambase;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -10,8 +11,11 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
+
 public class FavouriteActivity extends AppCompatActivity {
     private BottomNavigationView nav;
+    private StreamBaseDB db;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -21,6 +25,18 @@ public class FavouriteActivity extends AppCompatActivity {
         nav = findViewById(R.id.bottom_nav);
         nav.setSelectedItemId(R.id.nav_fav);
         nav.setOnNavigationItemSelectedListener(navLlistener);
+
+        db = new StreamBaseDB(this,null,null,1);
+        getFavourites();
+    }
+
+    public void getFavourites() {
+        Cursor data = db.getFavourites();
+        ArrayList<String> notesList = new ArrayList<>();
+        while (data.moveToNext()) {
+            notesList.add(data.getString(0));
+            System.out.println(data.getString(0));
+        }
     }
 
     private final BottomNavigationView.OnNavigationItemSelectedListener navLlistener = new BottomNavigationView.OnNavigationItemSelectedListener() {
