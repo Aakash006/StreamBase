@@ -3,7 +3,7 @@ package com.example.streambase;
 import com.google.gson.annotations.SerializedName;
 
 public class TMDBModel {
-    @SerializedName("backdrop_path")
+    @SerializedName("poster_path")
     private String imageURL;
 
     @SerializedName("original_title")

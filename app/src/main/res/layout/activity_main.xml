@@ -7,15 +7,28 @@
     tools:context=".MainActivity"
     android:background="@color/background">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textSize="30sp"
-            android:text="@string/trending"
-            android:fontFamily="@font/roboto_black"
-            android:textColor="#ffffff"
-            android:layout_marginStart="10dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textSize="30sp"
+                    android:text="@string/trending"
+                    android:fontFamily="@font/roboto_black"
+                    android:textColor="#ffffff"
+                    android:layout_marginStart="10dp"/>
+
+                <ListView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="15dp"
+                    android:gravity="center"
+                    android:id="@+id/trending_media"/>
+        </LinearLayout>
+
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav"

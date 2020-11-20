@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class MediaList {
+public class TMDBList {
     @SerializedName("results")
-    private List<Media> media;
+    private List<TMDBModel> media;
 
-    public List<Media> getMedia() { return media; }
+    public List<TMDBModel> getMedia() { return media; }
 }

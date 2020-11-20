@@ -74,13 +74,13 @@ public class MediaInfoActivity extends AppCompatActivity {
                 LayoutInflater inflater = mActivity.getLayoutInflater();
                 View itemView = inflater.inflate(R.layout.services_cards, null, true);
 
-                // Get current package name
+                // Get service name
                 String serviceName = list.get(position);
 
                 // Get the relative layout
                 LinearLayout relativeLayout = (LinearLayout) itemView.findViewById(R.id.rl);
 
-                // Display the app package name
+                // Display the service name
                 TextView serviceTxt = (TextView) itemView.findViewById(R.id.service_name);
                 if (serviceName.equals("Amazon Prime Video")) {
                     serviceTxt.setText("Prime Video");
@@ -92,8 +92,7 @@ public class MediaInfoActivity extends AppCompatActivity {
                 CardView cardView = (CardView) itemView.findViewById(R.id.card_view);
 
                 ImageView serviceIcon = (ImageView) itemView.findViewById(R.id.service_icon);
-                //String imageUrl = serviceIconUrls.get(position);
-                //setAppIcon(serviceIcon, imageUrl);
+
                 int icon = getServiceIcon(serviceName);
                 serviceIcon.setImageResource(icon);
                 return itemView;
