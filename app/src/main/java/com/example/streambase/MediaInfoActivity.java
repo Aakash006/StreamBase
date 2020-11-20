@@ -22,6 +22,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
@@ -44,11 +45,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MediaInfoActivity extends AppCompatActivity {
     private static final String TAG = "MediaInfoActivity";
 
-    private TextView name;
     private ImageView image;
     private ListView services;
     private Typeface typeface;
     private ArrayAdapter mAdapter;
+    private Toolbar mActionBarToolbar;
     private BottomNavigationView nav;
     private String mMediaName;
     private String mImageURL;
@@ -62,6 +63,10 @@ public class MediaInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.media_info_activity);
 
+        mActionBarToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mActionBarToolbar);
+
+
         db = new StreamBaseDB(getApplicationContext(), null, null, 0);
         mList = new ArrayList<>(); // Declare empty arraylist so in the background it will be updated.
 
@@ -71,7 +76,7 @@ public class MediaInfoActivity extends AppCompatActivity {
         mId = intent.getIntExtra("id", 0);
         fetchMediaContentProviderList(mId);
 
-        name = (TextView) findViewById(R.id.mediaName);
+        getSupportActionBar().setTitle(mMediaName);
         image = (ImageView) findViewById(R.id.mediaImage);
         services = (ListView) findViewById(R.id.services);
         mAddToDBBtn = (Button) findViewById(R.id.add_to_db);
@@ -182,7 +187,6 @@ public class MediaInfoActivity extends AppCompatActivity {
                 return view;
             }
         };
-        name.setText(mediaName);
 
         Glide.with(getApplicationContext()).load(getString(R.string.image_tmdb_url) + imageURL).into(image);
     }

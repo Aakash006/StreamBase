@@ -6,17 +6,23 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class FavouriteActivity extends AppCompatActivity {
     private BottomNavigationView nav;
+    private Toolbar mActionBarToolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.favourite_activity);
+
+        mActionBarToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mActionBarToolbar);
+        getSupportActionBar().setTitle("Favorites");
 
         nav = findViewById(R.id.bottom_nav);
         nav.setSelectedItemId(R.id.nav_fav);

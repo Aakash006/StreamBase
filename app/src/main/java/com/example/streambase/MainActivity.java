@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private ArrayAdapter mAdapter;
     private ListView trends;
+    private Toolbar mActionBarToolbar;
     private ArrayList<String> mediaNames;
     private ArrayList<String> mediaIcons;
 
@@ -53,6 +55,11 @@ public class MainActivity extends AppCompatActivity {
         nav.setSelectedItemId(R.id.nav_home);
         nav.setOnNavigationItemSelectedListener(navLlistener);
 
+        mActionBarToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mActionBarToolbar);
+        getSupportActionBar().setTitle("Recommendations");
+
+
         trends = (ListView) findViewById(R.id.trending_media);
 
         retrofit = new Retrofit.Builder()
@@ -60,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             getTrendingMedia();
         }
 

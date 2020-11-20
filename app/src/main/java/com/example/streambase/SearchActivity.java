@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.example.streambase.model.MediaContentProvider;
@@ -44,6 +45,7 @@ public class SearchActivity extends AppCompatActivity {
     private Typeface typeface;
     private TMDBList mediaList;
     private BottomNavigationView nav;
+    private Toolbar mActionBarToolbar;
     private ArrayList<MediaContentProvider> result;
 
     @Override
@@ -58,6 +60,9 @@ public class SearchActivity extends AppCompatActivity {
         search = (EditText) findViewById(R.id.search);
         listOfResults = (ListView) findViewById(R.id.listOfResults);
         typeface = getResources().getFont(R.font.roboto_medium2);
+        mActionBarToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mActionBarToolbar);
+        getSupportActionBar().setTitle("Search");
 
         search.setOnKeyListener((view, i, keyEvent) -> {
             // if Enter key is pressed invoke Volley
