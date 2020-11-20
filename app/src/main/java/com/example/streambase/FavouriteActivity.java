@@ -32,10 +32,10 @@ public class FavouriteActivity extends AppCompatActivity {
 
     public void getFavourites() {
         Cursor data = db.getFavourites();
-        ArrayList<String> notesList = new ArrayList<>();
+        ArrayList<String> names = new ArrayList<>();
         while (data.moveToNext()) {
-            notesList.add(data.getString(0));
-            System.out.println(data.getString(0));
+            names.add(data.getString(0));
+            System.out.println("*** "+ data.getString(0));
         }
     }
 
