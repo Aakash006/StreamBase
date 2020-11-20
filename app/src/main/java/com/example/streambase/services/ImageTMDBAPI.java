@@ -1,4 +1,4 @@
-package com.example.streambase;
+package com.example.streambase.services;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

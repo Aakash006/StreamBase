@@ -1,4 +1,4 @@
-package com.example.streambase;
+package com.example.streambase.model;
 
 import com.google.gson.annotations.SerializedName;
 

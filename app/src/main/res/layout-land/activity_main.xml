@@ -12,7 +12,6 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
                 <TextView
-                    android:id="@+id/trending"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
@@ -27,7 +26,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="15dp"
                     android:gravity="center"
-                    android:id="@+id/trending_media" />
+                    android:id="@+id/trending_media"
+                    android:layout_gravity="center"/>
         </LinearLayout>
 
 

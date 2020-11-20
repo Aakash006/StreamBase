@@ -19,10 +19,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.android.volley.RequestQueue;
+import com.example.streambase.model.Media;
+import com.example.streambase.model.MediaContentProvider;
+import com.example.streambase.model.MediaList;
+import com.example.streambase.services.UTellyAPI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,8 +40,6 @@ public class SearchActivity extends AppCompatActivity {
 
     EditText search;
     ListView listOfResults;
-    private RequestQueue queue;
-    private JSONArray cache;
     private Typeface typeface;
     private Retrofit retrofit;
     private MediaList mediaList;
@@ -146,7 +145,7 @@ public class SearchActivity extends AppCompatActivity {
         listOfResults.setAdapter(adapter);
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener navLlistener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    private final BottomNavigationView.OnNavigationItemSelectedListener navLlistener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment selectedFragment = null;

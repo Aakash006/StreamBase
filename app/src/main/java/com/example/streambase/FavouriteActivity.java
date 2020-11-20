@@ -23,7 +23,7 @@ public class FavouriteActivity extends AppCompatActivity {
         nav.setOnNavigationItemSelectedListener(navLlistener);
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener navLlistener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    private final BottomNavigationView.OnNavigationItemSelectedListener navLlistener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment selectedFragment = null;

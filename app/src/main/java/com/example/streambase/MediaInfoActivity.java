@@ -2,8 +2,6 @@ package com.example.streambase;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -25,15 +23,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class MediaInfoActivity extends AppCompatActivity {
     private static final String TAG = "MediaInfoActivity";
@@ -44,6 +37,9 @@ public class MediaInfoActivity extends AppCompatActivity {
     private Typeface typeface;
     private ArrayAdapter mAdapter;
     private BottomNavigationView nav;
+    private String mMediaName;
+    private String mImageURL;
+    ArrayList<String> mList;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,9 +47,9 @@ public class MediaInfoActivity extends AppCompatActivity {
         setContentView(R.layout.media_info_activity);
 
         Intent intent = getIntent();
-        String mediaName = intent.getStringExtra("name");
-        String imageURL = intent.getStringExtra("imageURL");
-        ArrayList<String> list = (ArrayList<String>) intent.getStringArrayListExtra("list");
+        mMediaName = intent.getStringExtra("name");
+        mImageURL = intent.getStringExtra("imageURL");
+        mList = (ArrayList<String>) intent.getStringArrayListExtra("list");
 
         name = (TextView) findViewById(R.id.mediaName);
         image = (ImageView) findViewById(R.id.mediaImage);
@@ -63,11 +59,11 @@ public class MediaInfoActivity extends AppCompatActivity {
         nav.setSelectedItemId(R.id.nav_search);
         nav.setOnNavigationItemSelectedListener(navLlistener);
 
-        setLayout(mediaName, imageURL, list);
+        setLayout(mMediaName, mImageURL, mList);
 
         Activity mActivity = this;
         typeface = getResources().getFont(R.font.roboto_black);
-        mAdapter = new ArrayAdapter<String>(this, R.layout.services_cards, list) {
+        mAdapter = new ArrayAdapter<String>(this, R.layout.services_cards, mList) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 // Get the view
@@ -75,7 +71,7 @@ public class MediaInfoActivity extends AppCompatActivity {
                 View itemView = inflater.inflate(R.layout.services_cards, null, true);
 
                 // Get service name
-                String serviceName = list.get(position);
+                String serviceName = mList.get(position);
 
                 // Get the relative layout
                 LinearLayout relativeLayout = (LinearLayout) itemView.findViewById(R.id.rl);
@@ -122,25 +118,7 @@ public class MediaInfoActivity extends AppCompatActivity {
         };
         name.setText(mediaName);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.utelly_base_url))
-                .build();
-        UTellyAPI api = retrofit.create(UTellyAPI.class);
-        Call<ResponseBody> call = api.getImage(imageURL);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful()) {
-                    Bitmap bitmap  = BitmapFactory.decodeStream(response.body().byteStream());
-                    image.setImageBitmap(bitmap);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
+        Glide.with(getApplicationContext()).load(imageURL).into(image);
     }
 
     public int getServiceIcon(String name) {
@@ -175,7 +153,7 @@ public class MediaInfoActivity extends AppCompatActivity {
         return icon;
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener navLlistener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    private final BottomNavigationView.OnNavigationItemSelectedListener navLlistener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment selectedFragment = null;
@@ -197,4 +175,20 @@ public class MediaInfoActivity extends AppCompatActivity {
             return false;
         }
     };
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("mMediaName", this.mMediaName);
+        outState.putString("mImageURL", this.mImageURL);
+        outState.putStringArrayList("mList", this.mList);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        this.mMediaName = savedInstanceState.getString("mMediaName");
+        this.mImageURL = savedInstanceState.getString("mImageURL");
+        this.mList = savedInstanceState.getStringArrayList("mList");
+    }
 }

@@ -1,4 +1,6 @@
-package com.example.streambase;
+package com.example.streambase.services;
+
+import com.example.streambase.model.MediaList;
 
 import java.util.Map;
 
@@ -10,11 +12,12 @@ import retrofit2.http.QueryMap;
 import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 
-public interface TMDBAPI {
+public interface UTellyAPI {
 
-    @GET("trending/all/day")
-    Call<TMDBList> getTrendingList(
-            @QueryMap Map<String, String> queries
+    @GET("lookup")
+    Call<MediaList> getMediaList(
+            @QueryMap Map<String, String> queries,
+            @HeaderMap Map<String, String> headers
     );
 
     @GET

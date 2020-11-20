@@ -1,34 +1,32 @@
 package com.example.streambase;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.example.streambase.model.TMDBList;
+import com.example.streambase.model.TMDBModel;
+import com.example.streambase.services.TMDBAPI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private ArrayAdapter mAdapter;
     private ListView trends;
+    private ArrayList<String> mediaNames;
+    private ArrayList<String> mediaIcons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,30 +60,30 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        getTrendingMedia();
+        if(savedInstanceState == null) {
+            getTrendingMedia();
+        }
+
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener navLlistener = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            Fragment selectedFragment = null;
+    private final BottomNavigationView.OnNavigationItemSelectedListener navLlistener = item -> {
+        Fragment selectedFragment = null;
 
-            switch (item.getItemId()) {
-                case R.id.nav_home:
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
-                case R.id.nav_search:
-                    startActivity(new Intent(getApplicationContext(), SearchActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
-                case R.id.nav_fav:
-                    startActivity(new Intent(getApplicationContext(), FavouriteActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
-            }
-            return false;
+        switch (item.getItemId()) {
+            case R.id.nav_home:
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            case R.id.nav_search:
+                startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            case R.id.nav_fav:
+                startActivity(new Intent(getApplicationContext(), FavouriteActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
         }
+        return false;
     };
 
     public void getTrendingMedia() {
@@ -98,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<TMDBList> call, Response<TMDBList> response) {
                 if(response.isSuccessful()) {
                     mediaList = response.body();
-                    ArrayList<String> mediaNames = new ArrayList<>();
-                    ArrayList<String> mediaIcons = new ArrayList<>();
+                    mediaNames = new ArrayList<>();
+                    mediaIcons = new ArrayList<>();
                     for (TMDBModel m: mediaList.getMedia()) {
                         if (m.getName() != null) {
                             mediaNames.add(m.getName());
@@ -120,14 +120,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void setCards(List<String> mediaNames, List<String> mediaIcons) {
+    public void setCards(ArrayList<String> mediaNames, ArrayList<String> mediaIcons) {
         Activity mActivity = this;
-        mAdapter = new ArrayAdapter<String>(this, R.layout.trending_cards, mediaNames) {
+        mAdapter = new ArrayAdapter<String>(this, R.layout.trending_cards, R.id.trending, mediaNames) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 // Get the view
                 LayoutInflater inflater = mActivity.getLayoutInflater();
-                View itemView = inflater.inflate(R.layout.trending_cards, null, true);
+                @SuppressLint({"ViewHolder", "InflateParams"}) View itemView = inflater.inflate(R.layout.trending_cards, null, true);
 
                 // Get media name
                 String mediaName = mediaNames.get(position);
@@ -135,38 +135,19 @@ public class MainActivity extends AppCompatActivity {
 
 
                 // Get the relative layout
-                LinearLayout relativeLayout = (LinearLayout) itemView.findViewById(R.id.rl);
+                //LinearLayout relativeLayout = (LinearLayout) itemView.findViewById(R.id.rl);
 
                 // Display the media name
                 TextView mediaTxt = (TextView) itemView.findViewById(R.id.media_name);
                 mediaTxt.setText(mediaName);
 
-                System.out.println("set");
-
                 // Get the card view
-                CardView cardView = (CardView) itemView.findViewById(R.id.card_view);
+                //CardView cardView = (CardView) itemView.findViewById(R.id.card_view);
 
                 ImageView serviceIcon = (ImageView) itemView.findViewById(R.id.media_icon);
 
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(getString(R.string.image_tmdb_url))
-                        .build();
-                ImageTMDBAPI api = retrofit.create(ImageTMDBAPI.class);
-                Call<ResponseBody> call = api.getImage(getString(R.string.image_tmdb_url) + mediaIcon);
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if(response.isSuccessful()) {
-                            Bitmap bitmap  = BitmapFactory.decodeStream(response.body().byteStream());
-                            serviceIcon.setImageBitmap(bitmap);
-                        }
-                    }
+                Glide.with(getApplicationContext()).load(getString(R.string.image_tmdb_url) + mediaIcon).into(serviceIcon);
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        t.printStackTrace();
-                    }
-                });
                 return itemView;
             }
         };
@@ -174,4 +155,17 @@ public class MainActivity extends AppCompatActivity {
         trends.setAdapter(mAdapter);
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList("mediaNames", mediaNames);
+        outState.putStringArrayList("mediaIcons", mediaIcons);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mediaNames = savedInstanceState.getStringArrayList("mediaNames");
+        mediaIcons = savedInstanceState.getStringArrayList("mediaIcons");
+    }
 }
