@@ -19,10 +19,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.example.streambase.model.Media;
 import com.example.streambase.model.MediaContentProvider;
-import com.example.streambase.model.MediaList;
-import com.example.streambase.services.UTellyAPI;
+import com.example.streambase.model.TMDB;
+import com.example.streambase.model.TMDBList;
+import com.example.streambase.services.TMDBAPI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -32,6 +32,7 @@ import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -41,9 +42,9 @@ public class SearchActivity extends AppCompatActivity {
     EditText search;
     ListView listOfResults;
     private Typeface typeface;
-    private Retrofit retrofit;
-    private MediaList mediaList;
+    private TMDBList mediaList;
     private BottomNavigationView nav;
+    private ArrayList<MediaContentProvider> result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +62,7 @@ public class SearchActivity extends AppCompatActivity {
         search.setOnKeyListener((view, i, keyEvent) -> {
             // if Enter key is pressed invoke Volley
             if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && i == KeyEvent.KEYCODE_ENTER) {
-                retrofit = new Retrofit.Builder()
-                        .baseUrl(getString(R.string.utelly_base_url))
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
+
                 fetchMedia(search.getText().toString());
                 return true;
             }
@@ -77,51 +75,64 @@ public class SearchActivity extends AppCompatActivity {
         listOfResults.setOnItemClickListener((adapterView, view, i, l) -> {
             Intent intent = new Intent(SearchActivity.this, MediaInfoActivity.class);
             String selectedItem = adapterView.getItemAtPosition(i).toString();
-            ArrayList<String> providers = new ArrayList<>();
-            for (Media m : mediaList.getMedia()) {
-                if(m.getName().equals(selectedItem)) {
-                    intent.putExtra("name", m.getName());
-                    intent.putExtra("imageURL", m.getImageURL());
-                    for(MediaContentProvider mc : m.getMediaContentProviderList()) providers.add(mc.getMediaContentProviderName());
-                    intent.putExtra("list", providers);
-                    break;
+            for (TMDB m : mediaList.getMedia()) {
+                if (m.getMediaType().equals("tv")) {
+                    if (m.getTvShowName().equals(selectedItem)) {
+                        intent.putExtra("name", m.getTvShowName());
+                        intent.putExtra("imageURL", m.getImageURL());
+                        intent.putExtra("id", m.getId());
+                        break;
+                    }
+                } else if (m.getMediaType().equals("movie")) {
+                    if (m.getMovieName().equals(selectedItem)) {
+                        intent.putExtra("name", m.getMovieName());
+                        intent.putExtra("imageURL", m.getImageURL());
+                        intent.putExtra("id", m.getId());
+                        break;
+                    }
                 }
             }
             startActivity(intent);
         });
     }
 
+
     private void fetchMedia(String mediaName) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.tmdb_base_url))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
         Map<String, String> queryParametersMap = new HashMap<>();
-        queryParametersMap.put("term", mediaName);
-        queryParametersMap.put("country", "ca");
+        queryParametersMap.put("api_key", getString(R.string.tmdb_key));
+        queryParametersMap.put("query", mediaName);
 
-        Map<String, String> headersMap = new HashMap<>();
-        headersMap.put("x-rapidapi-host", getString(R.string.host));
-        headersMap.put("x-rapidapi-key", getString(R.string.utelly_key));
+        TMDBAPI api = retrofit.create(TMDBAPI.class);
+        Call<TMDBList> call = api.getMediaList(queryParametersMap);
 
-        UTellyAPI api = retrofit.create(UTellyAPI.class);
-        Call<MediaList> call = api.getMediaList(queryParametersMap, headersMap);
-
-        call.enqueue(new Callback<MediaList>() {
+        call.enqueue(new Callback<TMDBList>() {
             @Override
-            public void onResponse(Call<MediaList> call, retrofit2.Response<MediaList> response) {
-                if(response.isSuccessful()) {
+            public void onResponse(Call<TMDBList> call, Response<TMDBList> response) {
+                if (response.isSuccessful()) {
                     mediaList = response.body();
                     List<String> moviesOrShows = new ArrayList<>();
-                    for (Media m : mediaList.getMedia()) {
-                        moviesOrShows.add(m.getName());
+                    for (TMDB m : mediaList.getMedia()) {
+                        if (m.getMediaType().equals("tv")) {
+                            moviesOrShows.add(m.getTvShowName());
+                        } else if (m.getMediaType().equals("movie")) {
+                            moviesOrShows.add(m.getMovieName());
+                        }
                     }
                     createAdapter(moviesOrShows);
                 }
             }
 
             @Override
-            public void onFailure(Call<MediaList> call, Throwable t) {
+            public void onFailure(Call<TMDBList> call, Throwable t) {
                 Log.d(TAG, "onFailure: " + t.getMessage());
                 t.getStackTrace();
             }
         });
+
     }
 
     private void createAdapter(List<String> moviesOrShows) {

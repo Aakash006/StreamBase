@@ -1,6 +1,6 @@
 package com.example.streambase.services;
 
-import com.example.streambase.model.MediaList;
+import com.example.streambase.model.MediaCollection;
 
 import java.util.Map;
 
@@ -14,11 +14,12 @@ import retrofit2.http.Url;
 
 public interface UTellyAPI {
 
-    @GET("lookup")
-    Call<MediaList> getMediaList(
+    @GET("idlookup")
+    Call<MediaCollection> getMediaList(
             @QueryMap Map<String, String> queries,
             @HeaderMap Map<String, String> headers
     );
+
 
     @GET
     @Streaming

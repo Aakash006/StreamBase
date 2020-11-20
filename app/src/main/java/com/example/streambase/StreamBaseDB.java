@@ -4,18 +4,20 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
 
-public class SteamBaseDB extends SQLiteOpenHelper {
+public class StreamBaseDB extends SQLiteOpenHelper {
+    private static final String TAG = "StreamBaseDB";
 
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "streambase.db";
 
-    public SteamBaseDB(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
+    public StreamBaseDB(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
     }
 
@@ -24,7 +26,8 @@ public class SteamBaseDB extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE FAVORITES (" +
                 "id INTEGER PRIMARY KEY," +
                 "name Text NOT NULL," +
-                "media_type Text NOT NULL);");
+                "img_id Text Not NULL," +
+                "providers Text);");
     }
 
     @Override
@@ -32,12 +35,18 @@ public class SteamBaseDB extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS FAVORITES;");
     }
 
-    public void addRecord(ArrayList<String>record) {
+    public void addRecord(int id, String mediaName, String imgId, ArrayList<String> providers) {
+        Log.d(TAG, "addRecord: " + id);
+        Log.d(TAG, "addRecord: " + mediaName);
+        Log.d(TAG, "addRecord: " + imgId);
+        Log.d(TAG, "addRecord: " + providers.toString());
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("id", Integer.valueOf(record.get(0)));
-        contentValues.put("name", record.get(1));
-        contentValues.put("media_type", record.get(2));
+        contentValues.put("id", id);
+        contentValues.put("name", mediaName);
+        contentValues.put("img_id", imgId);
+        contentValues.put("providers", providers.toString().replace("[", "").replace("]", ""));
+        sqLiteDatabase.insert("FAVORITES", "providers", contentValues);
     }
 
 }

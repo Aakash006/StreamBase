@@ -6,7 +6,9 @@ import java.util.List;
 
 public class TMDBList {
     @SerializedName("results")
-    private List<TMDBModel> media;
+    private List<TMDB> media;
 
-    public List<TMDBModel> getMedia() { return media; }
+    public List<TMDB> getMedia() {
+        return media;
+    }
 }

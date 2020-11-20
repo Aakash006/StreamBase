@@ -18,6 +18,11 @@ public interface TMDBAPI {
             @QueryMap Map<String, String> queries
     );
 
+    @GET("search/multi")
+    Call<TMDBList> getMediaList(
+            @QueryMap Map<String, String> queries
+    );
+
     @GET
     @Streaming
     Call<ResponseBody> getImage(

@@ -18,8 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.example.streambase.model.TMDB;
 import com.example.streambase.model.TMDBList;
-import com.example.streambase.model.TMDBModel;
 import com.example.streambase.services.TMDBAPI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -100,9 +100,9 @@ public class MainActivity extends AppCompatActivity {
                     mediaList = response.body();
                     mediaNames = new ArrayList<>();
                     mediaIcons = new ArrayList<>();
-                    for (TMDBModel m: mediaList.getMedia()) {
-                        if (m.getName() != null) {
-                            mediaNames.add(m.getName());
+                    for (TMDB m : mediaList.getMedia()) {
+                        if (m.getMovieName() != null) {
+                            mediaNames.add(m.getMovieName());
                             mediaIcons.add(m.getImageURL());
                         }
                     }

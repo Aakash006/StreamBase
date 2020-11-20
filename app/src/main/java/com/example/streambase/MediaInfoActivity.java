@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -24,9 +26,20 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.example.streambase.model.MediaCollection;
+import com.example.streambase.model.MediaContentProvider;
+import com.example.streambase.services.UTellyAPI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MediaInfoActivity extends AppCompatActivity {
     private static final String TAG = "MediaInfoActivity";
@@ -39,21 +52,29 @@ public class MediaInfoActivity extends AppCompatActivity {
     private BottomNavigationView nav;
     private String mMediaName;
     private String mImageURL;
-    ArrayList<String> mList;
+    private ArrayList<String> mList;
+    private Button mAddToDBBtn;
+    private int mId;
+    private StreamBaseDB db;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.media_info_activity);
 
+        db = new StreamBaseDB(getApplicationContext(), null, null, 0);
+        mList = new ArrayList<>(); // Declare empty arraylist so in the background it will be updated.
+
         Intent intent = getIntent();
         mMediaName = intent.getStringExtra("name");
         mImageURL = intent.getStringExtra("imageURL");
-        mList = (ArrayList<String>) intent.getStringArrayListExtra("list");
+        mId = intent.getIntExtra("id", 0);
+        fetchMediaContentProviderList(mId);
 
         name = (TextView) findViewById(R.id.mediaName);
         image = (ImageView) findViewById(R.id.mediaImage);
         services = (ListView) findViewById(R.id.services);
+        mAddToDBBtn = (Button) findViewById(R.id.add_to_db);
 
         nav = findViewById(R.id.bottom_nav);
         nav.setSelectedItemId(R.id.nav_search);
@@ -95,7 +116,52 @@ public class MediaInfoActivity extends AppCompatActivity {
             }
         };
 
-        services.setAdapter(mAdapter);
+
+        mAddToDBBtn.setOnClickListener(e -> {
+//            Log.d(TAG, "onCreate: " + mMediaName);
+//            Log.d(TAG, "onCreate: " + mImageURL);
+//            Log.d(TAG, "onCreate: " + mId);
+//            Log.d(TAG, "onCreate: " + mList.toString());
+            db.addRecord(mId, mMediaName, mImageURL, mList);
+        });
+    }
+
+    public void fetchMediaContentProviderList(int id) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.utelly_base_url))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        Map<String, String> queryParametersMap = new HashMap<>();
+        queryParametersMap.put("source_id", String.valueOf(id));
+        queryParametersMap.put("source", "tmdb");
+
+        Map<String, String> headersMap = new HashMap<>();
+        headersMap.put("x-rapidapi-host", getString(R.string.host));
+        headersMap.put("x-rapidapi-key", getString(R.string.utelly_key));
+
+        UTellyAPI api = retrofit.create(UTellyAPI.class);
+        Call<MediaCollection> call = api.getMediaList(queryParametersMap, headersMap);
+        call.enqueue(new Callback<MediaCollection>() {
+            @Override
+            public void onResponse(Call<MediaCollection> call, Response<MediaCollection> response) {
+                if (response.isSuccessful()) {
+                    ArrayList<MediaContentProvider> mediaContentProviders = response.body().getMedia().getMediaContentProviderList();
+                    if (mediaContentProviders != null) {
+                        for (MediaContentProvider mc : mediaContentProviders) {
+                            mList.add(mc.getMediaContentProviderName());
+                            services.setAdapter(mAdapter);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MediaCollection> call, Throwable t) {
+                Log.d(TAG, "onFailure: " + t.getMessage());
+                t.getStackTrace();
+            }
+        });
     }
 
     public void setLayout(String mediaName, String imageURL, ArrayList<String> list) {
@@ -118,7 +184,7 @@ public class MediaInfoActivity extends AppCompatActivity {
         };
         name.setText(mediaName);
 
-        Glide.with(getApplicationContext()).load(imageURL).into(image);
+        Glide.with(getApplicationContext()).load(getString(R.string.image_tmdb_url) + imageURL).into(image);
     }
 
     public int getServiceIcon(String name) {
@@ -176,11 +242,13 @@ public class MediaInfoActivity extends AppCompatActivity {
         }
     };
 
+
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("mMediaName", this.mMediaName);
         outState.putString("mImageURL", this.mImageURL);
+        outState.putInt("id", this.mId);
         outState.putStringArrayList("mList", this.mList);
     }
 
@@ -189,6 +257,7 @@ public class MediaInfoActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         this.mMediaName = savedInstanceState.getString("mMediaName");
         this.mImageURL = savedInstanceState.getString("mImageURL");
+        this.mId = savedInstanceState.getInt("id");
         this.mList = savedInstanceState.getStringArrayList("mList");
     }
 }
