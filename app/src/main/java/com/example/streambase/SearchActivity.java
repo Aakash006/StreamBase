@@ -43,7 +43,7 @@ public class SearchActivity extends AppCompatActivity {
     private JSONArray cache;
     private Typeface typeface;
     private Retrofit retrofit;
-    private MediaList mediaList;
+    private MediaList<Media> mediaList;
     private BottomNavigationView nav;
 
     @Override

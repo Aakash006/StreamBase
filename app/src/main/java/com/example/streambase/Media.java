@@ -3,8 +3,6 @@ package com.example.streambase;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
-import java.util.List;
-
 
 public class Media {
     private String name;

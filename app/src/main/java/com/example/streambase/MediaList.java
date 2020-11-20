@@ -5,11 +5,11 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
-public class MediaList {
+public class MediaList<T> {
     @SerializedName("results")
-    private List<Media> media;
+    public List<T> media;
 
-    public List<Media> getMedia() {
+    public List<T> getMedia() {
         return media;
     }
 }

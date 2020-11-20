@@ -14,8 +14,7 @@ public interface TMDBAPI {
 
     @GET("trending/all/day")
     Call<MediaList> getTrendingList(
-            @QueryMap Map<String, String> queries,
-            @HeaderMap Map<String, String> headers
+            @QueryMap Map<String, String> queries
     );
 
     @GET
