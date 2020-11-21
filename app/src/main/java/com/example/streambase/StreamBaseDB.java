@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -65,5 +66,19 @@ public class StreamBaseDB extends SQLiteOpenHelper {
         }
         cursor.close();
         return result;
+    }
+
+    public boolean isFavourite(int id) {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME
+                + " WHERE id=" + id + ";",null);
+        int rowsCount= cursor.getCount();
+        cursor.close();
+        return rowsCount > 0;
+    }
+
+    public boolean removeFavourite(int id) {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.delete(TABLE_NAME, "id=" + id, null) > 0;
     }
 }

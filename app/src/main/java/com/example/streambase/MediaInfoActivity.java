@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -42,11 +43,16 @@ public class MediaInfoActivity extends AppCompatActivity {
 
     private TMDB mMedia;
     private List<String> mMediaServiceProviderList;
+    private boolean isFavourite = false;
+    private StreamBaseDB mDB;
+    private static final String REMOVE_FAV = "Remove Favourite";
+    private static final String ADD_FAV = "Add to Favourite";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.media_info_activity);
+        mDB = new StreamBaseDB(getApplicationContext(), null, null, 0);
 
         Intent intent = getIntent();
         mMedia = intent.getParcelableExtra("data");
@@ -57,6 +63,12 @@ public class MediaInfoActivity extends AppCompatActivity {
 
         ImageView posterImgView = findViewById(R.id.mediaImage);
         Button favoriteBtn = findViewById(R.id.add_to_db);
+        if (mDB.isFavourite(mMedia.getId())) {
+            isFavourite = true;
+            favoriteBtn.setText(REMOVE_FAV);
+        } else {
+            favoriteBtn.setText(ADD_FAV);
+        }
         services = findViewById(R.id.services);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
@@ -71,10 +83,21 @@ public class MediaInfoActivity extends AppCompatActivity {
         mMediaServiceProviderAdapter = new MediaServiceProviderAdapter(getApplicationContext(), 0, mMediaServiceProviderList);
 
         favoriteBtn.setOnClickListener(e -> {
-            StreamBaseDB streamBaseDB = new StreamBaseDB(getApplicationContext(), null, null, 0);
+            if (!isFavourite) {
+                favoriteBtn.setText(REMOVE_FAV);
 
-            streamBaseDB.addRecord(mMedia, mMediaServiceProviderList);
-            Toast.makeText(getApplicationContext(), "Success media added!", Toast.LENGTH_SHORT).show();
+                mDB.addRecord(mMedia, mMediaServiceProviderList);
+                Toast.makeText(getApplicationContext(), "Success media added!", Toast.LENGTH_SHORT).show();
+            } else {
+                boolean removed = mDB.removeFavourite(mMedia.getId());
+                if (removed) {
+                    favoriteBtn.setText(ADD_FAV);
+                    Toast.makeText(getApplicationContext(), "Media successfully removed from favourites!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Media could not removed from favourites!", Toast.LENGTH_SHORT).show();
+                }
+
+            }
         });
     }
 
