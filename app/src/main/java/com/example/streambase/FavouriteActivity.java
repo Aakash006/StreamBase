@@ -1,70 +1,70 @@
 package com.example.streambase;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.view.MenuItem;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.streambase.adapters.MediaAdapter;
+import com.example.streambase.model.TMDB;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class FavouriteActivity extends AppCompatActivity {
-    private BottomNavigationView nav;
-    private Toolbar mActionBarToolbar;
-    private StreamBaseDB db;
+    private static final String TAG = "FavouriteActivity";
+
+    private RecyclerView mRecyclerView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.favourite_activity);
 
-        mActionBarToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(mActionBarToolbar);
+        Toolbar actionBarToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(actionBarToolbar);
         getSupportActionBar().setTitle("Favorites");
 
-        nav = findViewById(R.id.bottom_nav);
-        nav.setSelectedItemId(R.id.nav_fav);
-        nav.setOnNavigationItemSelectedListener(navLlistener);
+        BottomNavigationView navigationView = findViewById(R.id.bottom_nav);
+        navigationView.setSelectedItemId(R.id.nav_fav);
+        navigationView.setOnNavigationItemSelectedListener(navLlistener);
 
-        db = new StreamBaseDB(this,null,null,1);
+        mRecyclerView = findViewById(R.id.favorite_media);
+
         getFavourites();
     }
 
     public void getFavourites() {
-        Cursor data = db.getFavourites();
-        ArrayList<String> names = new ArrayList<>();
-        while (data.moveToNext()) {
-            names.add(data.getString(0));
-            System.out.println("*** "+ data.getString(0));
-        }
+        StreamBaseDB streamBaseDB = new StreamBaseDB(this, null, null, 1);
+        HashMap<TMDB, String> favorites = streamBaseDB.getAllFavoriteMedia();
+        List<TMDB> mediaList = new ArrayList<>();
+        mediaList.addAll(favorites.keySet());
+
+        MediaAdapter mediaAdapter = new MediaAdapter(getApplicationContext(), mediaList);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
+        mRecyclerView.setAdapter(mediaAdapter);
     }
 
-    private final BottomNavigationView.OnNavigationItemSelectedListener navLlistener = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            Fragment selectedFragment = null;
-
-            switch (item.getItemId()) {
-                case R.id.nav_home:
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
-                case R.id.nav_search:
-                    startActivity(new Intent(getApplicationContext(), SearchActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
-                case R.id.nav_fav:
-                    startActivity(new Intent(getApplicationContext(), FavouriteActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
-            }
-            return false;
+    private final BottomNavigationView.OnNavigationItemSelectedListener navLlistener = item -> {
+        switch (item.getItemId()) {
+            case R.id.nav_home:
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            case R.id.nav_search:
+                startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            case R.id.nav_fav:
+                startActivity(new Intent(getApplicationContext(), FavouriteActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
         }
+        return false;
     };
 }

@@ -5,11 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import java.util.ArrayList;
+import com.example.streambase.model.TMDB;
+
+import java.util.HashMap;
+import java.util.List;
 
 
 public class StreamBaseDB extends SQLiteOpenHelper {
@@ -28,8 +30,10 @@ public class StreamBaseDB extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME + "(" +
                 "id INTEGER PRIMARY KEY," +
-                "name Text NOT NULL," +
-                "img_id Text Not NULL," +
+                "media_type Text NOT NULL," +
+                "original_name Text," +
+                "original_title Text," +
+                "poster_path Text Not NULL," +
                 "providers Text);");
     }
 
@@ -38,25 +42,32 @@ public class StreamBaseDB extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS FAVORITES;");
     }
 
-    public void addRecord(int id, String mediaName, String imgId, ArrayList<String> providers) {
-        Log.d(TAG, "addRecord: " + id);
-        Log.d(TAG, "addRecord: " + mediaName);
-        Log.d(TAG, "addRecord: " + imgId);
-        Log.d(TAG, "addRecord: " + providers.toString());
+    public void addRecord(TMDB media, List<String> providers) {
+//        Log.d(TAG, "addRecord: " + media.getId());
+//        Log.d(TAG, "addRecord: " + media.getMovieName() == null ? media.getTvShowName() : media.getMovieName());
+//        Log.d(TAG, "addRecord: " + media.getImageURL());
+//        Log.d(TAG, "addRecord: " + providers.toString());
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("id", id);
-        contentValues.put("name", mediaName);
-        contentValues.put("img_id", imgId);
+        contentValues.put("id", media.getId());
+        contentValues.put("media_type", media.getMediaType());
+        contentValues.put("original_name", media.getTvShowName());
+        contentValues.put("original_title", media.getMovieName());
+        contentValues.put("poster_path", media.getImageURL());
         contentValues.put("providers", providers.toString().replace("[", "").replace("]", ""));
         sqLiteDatabase.insert(TABLE_NAME, "providers", contentValues);
     }
 
-    public Cursor getFavourites() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT name, img_Id, providers FROM " + TABLE_NAME;
-        Cursor data = db.rawQuery(query, null);
-        return data;
-    }
+    public HashMap<TMDB, String> getAllFavoriteMedia() {
+        HashMap<TMDB, String> result = new HashMap<>();
 
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME + ";", null);
+
+        while (cursor.moveToNext()) {
+            result.put(new TMDB(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4)), cursor.getString(5));
+        }
+        cursor.close();
+        return result;
+    }
 }

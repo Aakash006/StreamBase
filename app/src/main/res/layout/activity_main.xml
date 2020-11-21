@@ -32,12 +32,13 @@
                     android:textColor="#000000"
                     android:layout_marginStart="10dp"/>
 
-                <ListView
+                <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_margin="15dp"
                     android:gravity="center"
-                    android:id="@+id/trending_media" />
+                    android:id="@+id/trending_media"
+                    android:padding="4dp" />
         </LinearLayout>
 
 
