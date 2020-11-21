@@ -46,7 +46,7 @@ public class MediaServiceProviderAdapter extends ArrayAdapter<String> {
     }
 
     public int getServiceIcon(String name) {
-        int icon = 0;
+        int icon;
         name = name.toLowerCase();
         switch (name) {
             case "netflix":

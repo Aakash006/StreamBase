@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -77,6 +78,19 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("data", this.mMediaList);
+        outState.putInt("position", this.mListView.getFirstVisiblePosition());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        this.mMediaList = savedInstanceState.getParcelable("data");
+        this.mListView.setSelectionFromTop(savedInstanceState.getInt("position"), 0);
+    }
 
     private void fetchMedia(String mediaName) {
         Retrofit retrofit = new Retrofit.Builder()

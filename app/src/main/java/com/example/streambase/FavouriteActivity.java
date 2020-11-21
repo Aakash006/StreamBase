@@ -3,6 +3,7 @@ package com.example.streambase;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -14,12 +15,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class FavouriteActivity extends AppCompatActivity {
     private static final String TAG = "FavouriteActivity";
 
     private RecyclerView mRecyclerView;
+
+    private ArrayList<TMDB> mMediaList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,13 +41,24 @@ public class FavouriteActivity extends AppCompatActivity {
         getFavourites();
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("data", this.mMediaList);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        this.mMediaList = savedInstanceState.getParcelableArrayList("data");
+    }
+
     public void getFavourites() {
         StreamBaseDB streamBaseDB = new StreamBaseDB(this, null, null, 1);
         HashMap<TMDB, String> favorites = streamBaseDB.getAllFavoriteMedia();
-        List<TMDB> mediaList = new ArrayList<>();
-        mediaList.addAll(favorites.keySet());
+        mMediaList = new ArrayList<>(favorites.keySet());
 
-        MediaAdapter mediaAdapter = new MediaAdapter(getApplicationContext(), mediaList);
+        MediaAdapter mediaAdapter = new MediaAdapter(getApplicationContext(), mMediaList);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
         mRecyclerView.setAdapter(mediaAdapter);
     }

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -78,7 +77,9 @@ public class MediaInfoActivity extends AppCompatActivity {
         mMediaServiceProviderList = new ArrayList<>();
 
         fetchMediaContentProviderList(mMedia.getId());
-        Glide.with(getApplicationContext()).load(getString(R.string.image_tmdb_url) + mMedia.getImageURL()).into(posterImgView);
+        Glide.with(getApplicationContext())
+                .load(getString(R.string.image_tmdb_url) + mMedia.getImageURL())
+                .into(posterImgView);
 
         mMediaServiceProviderAdapter = new MediaServiceProviderAdapter(getApplicationContext(), 0, mMediaServiceProviderList);
 
