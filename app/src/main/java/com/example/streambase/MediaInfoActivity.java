@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -54,7 +55,7 @@ public class MediaInfoActivity extends AppCompatActivity {
     private String mMediaName;
     private String mImageURL;
     private ArrayList<String> mList;
-    private Button mAddToDBBtn;
+    private ImageButton mAddToDBBtn;
     private int mId;
     private StreamBaseDB db;
 
@@ -79,7 +80,7 @@ public class MediaInfoActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(mMediaName);
         image = (ImageView) findViewById(R.id.mediaImage);
         services = (ListView) findViewById(R.id.services);
-        mAddToDBBtn = (Button) findViewById(R.id.add_to_db);
+        mAddToDBBtn = (ImageButton) findViewById(R.id.add_to_db);
 
         nav = findViewById(R.id.bottom_nav);
         nav.setSelectedItemId(R.id.nav_search);
