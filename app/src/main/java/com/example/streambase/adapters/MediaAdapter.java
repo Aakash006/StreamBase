@@ -66,13 +66,6 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.ViewHolder> 
                 if (pos != RecyclerView.NO_POSITION) {
                     TMDB mediaItem = mediaList.get(pos);
                     Intent intent = new Intent(mContext, MediaInfoActivity.class);
-
-                    if (mediaItem.getMediaType().equals("tv"))
-                        intent.putExtra("name", mediaItem.getTvShowName());
-                    if (mediaItem.getMediaType().equals("movie"))
-                        intent.putExtra("name", mediaItem.getMovieName());
-                    intent.putExtra("imageURL", mediaItem.getImageURL());
-                    intent.putExtra("id", mediaItem.getId());
                     intent.putExtra("data", mediaItem);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent);

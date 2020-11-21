@@ -43,10 +43,6 @@ public class StreamBaseDB extends SQLiteOpenHelper {
     }
 
     public void addRecord(TMDB media, List<String> providers) {
-//        Log.d(TAG, "addRecord: " + media.getId());
-//        Log.d(TAG, "addRecord: " + media.getMovieName() == null ? media.getTvShowName() : media.getMovieName());
-//        Log.d(TAG, "addRecord: " + media.getImageURL());
-//        Log.d(TAG, "addRecord: " + providers.toString());
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("id", media.getId());
