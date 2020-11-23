@@ -42,6 +42,7 @@ public class MediaInfoActivity extends AppCompatActivity {
 
     private TMDB mMedia;
     private List<String> mMediaServiceProviderList;
+    private List<String> mMediaServiceProviderUrlList;
     private boolean isFavourite = false;
     private StreamBaseDB mDB;
     private static final String REMOVE_FAV = "Remove Favourite";
@@ -75,13 +76,14 @@ public class MediaInfoActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
 
         mMediaServiceProviderList = new ArrayList<>();
+        mMediaServiceProviderUrlList = new ArrayList<>();
 
         fetchMediaContentProviderList(mMedia.getId());
         Glide.with(getApplicationContext())
                 .load(getString(R.string.image_tmdb_url) + mMedia.getImageURL())
                 .into(posterImgView);
 
-        mMediaServiceProviderAdapter = new MediaServiceProviderAdapter(getApplicationContext(), 0, mMediaServiceProviderList);
+        mMediaServiceProviderAdapter = new MediaServiceProviderAdapter(getApplicationContext(), 0, mMediaServiceProviderList, mMediaServiceProviderUrlList);
 
         favoriteBtn.setOnClickListener(e -> {
             if (!isFavourite) {
@@ -136,8 +138,10 @@ public class MediaInfoActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     ArrayList<MediaContentProvider> mediaContentProviders = response.body().getMedia().getMediaContentProviderList();
                     if (mediaContentProviders != null) {
-                        for (MediaContentProvider mc : mediaContentProviders)
+                        for (MediaContentProvider mc : mediaContentProviders) {
                             mMediaServiceProviderList.add(mc.getMediaContentProviderName());
+                            mMediaServiceProviderUrlList.add(mc.getStreamURL());
+                        }
                         services.setAdapter(mMediaServiceProviderAdapter);
                     }
                 }

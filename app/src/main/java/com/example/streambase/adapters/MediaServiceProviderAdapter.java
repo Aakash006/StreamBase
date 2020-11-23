@@ -1,6 +1,8 @@
 package com.example.streambase.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +22,13 @@ public class MediaServiceProviderAdapter extends ArrayAdapter<String> {
 
     private Context mContext;
     private List<String> mediaServiceProviderList;
+    private List<String> mediaServiceProviderUrlList;
 
-    public MediaServiceProviderAdapter(@NonNull Context context, int resource, @NonNull List<String> objects) {
+    public MediaServiceProviderAdapter(@NonNull Context context, int resource, @NonNull List<String> objects, List<String> objectsUrl) {
         super(context, resource, objects);
         this.mContext = context;
         this.mediaServiceProviderList = objects;
+        this.mediaServiceProviderUrlList = objectsUrl;
     }
 
     @NonNull
@@ -41,6 +45,13 @@ public class MediaServiceProviderAdapter extends ArrayAdapter<String> {
         Log.d("TAG", "getView: " + mediaServiceProvider);
         int icon = getServiceIcon(mediaServiceProvider);
         serviceIcon.setImageResource(icon);
+
+        convertView.setOnClickListener(e -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(this.mediaServiceProviderUrlList.get(position)));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
+        });
 
         return convertView;
     }
