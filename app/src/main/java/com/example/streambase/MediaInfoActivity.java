@@ -2,39 +2,33 @@ package com.example.streambase;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.streambase.adapters.MediaServiceProviderAdapter;
-import com.example.streambase.model.MediaCollection;
-import com.example.streambase.model.MediaContentProvider;
 import com.example.streambase.model.TMDB;
-import com.example.streambase.services.UTellyAPI;
+import com.example.streambase.services.OnCallbackReceived;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ListView;
+
+import com.example.streambase.adapters.MediaInfoPagerAdapter;
+
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+public class MediaInfoActivity extends AppCompatActivity implements OnCallbackReceived {
 
-public class MediaInfoActivity extends AppCompatActivity {
     private static final String TAG = "MediaInfoActivity";
 
     private ListView services;
@@ -42,67 +36,108 @@ public class MediaInfoActivity extends AppCompatActivity {
 
     private TMDB mMedia;
     private List<String> mMediaServiceProviderList;
-    private List<String> mMediaServiceProviderUrlList;
     private boolean isFavourite = false;
     private StreamBaseDB mDB;
     private static final String REMOVE_FAV = "Remove Favourite";
     private static final String ADD_FAV = "Add to Favourite";
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.media_info_activity);
+
         mDB = new StreamBaseDB(getApplicationContext(), null, null, 0);
 
         Intent intent = getIntent();
         mMedia = intent.getParcelableExtra("data");
 
-        Toolbar actionBarToolbar = findViewById(R.id.toolbar);
+        MaterialToolbar actionBarToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(actionBarToolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(mMedia.getMovieName() == null ? mMedia.getTvShowName() : mMedia.getMovieName());
 
         ImageView posterImgView = findViewById(R.id.mediaImage);
-        Button favoriteBtn = findViewById(R.id.add_to_db);
+        FloatingActionButton favoriteBtn = findViewById(R.id.fav_add_to_db);
         if (mDB.isFavourite(mMedia.getId())) {
             isFavourite = true;
-            favoriteBtn.setText(REMOVE_FAV);
+            favoriteBtn.setImageResource(R.drawable.ic_baseline_favorite_red_24);
         } else {
-            favoriteBtn.setText(ADD_FAV);
+            favoriteBtn.setImageResource(R.drawable.ic_baseline_favorite_grey_24);
         }
-        services = findViewById(R.id.services);
+
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
         bottomNavigationView.setSelectedItemId(R.id.nav_search);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
 
-        mMediaServiceProviderList = new ArrayList<>();
-        mMediaServiceProviderUrlList = new ArrayList<>();
+        ViewPager viewPager = findViewById(R.id.view_pager);
 
-        fetchMediaContentProviderList(mMedia.getId());
-        Glide.with(getApplicationContext())
-                .load(getString(R.string.image_tmdb_url) + mMedia.getImageURL())
-                .into(posterImgView);
+        MediaInfoPagerAdapter mediaInfoPagerAdapter = new MediaInfoPagerAdapter(getSupportFragmentManager(), getApplicationContext());
+        mediaInfoPagerAdapter.addFragment(SummaryFragment.newInstance(mMedia), getString(R.string.tab_1));
+        mediaInfoPagerAdapter.addFragment(ServiceFragment.newInstance(mMedia), getString(R.string.tab_2));
+        viewPager.setAdapter(mediaInfoPagerAdapter);
+        viewPager.setOnTouchListener(null);
 
-        mMediaServiceProviderAdapter = new MediaServiceProviderAdapter(getApplicationContext(), 0, mMediaServiceProviderList, mMediaServiceProviderUrlList);
+        TabLayout tabLayout = findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setSelectedTabIndicatorColor(getColor(R.color.colorSecondary));
+//        TabItem overviewTab = findViewById(R.id.overview_tab);
+//        TabItem serviceTab = findViewById(R.id.service_tab);
 
-        favoriteBtn.setOnClickListener(e -> {
-            if (!isFavourite) {
-                favoriteBtn.setText(REMOVE_FAV);
+        tabLayout.setupWithViewPager(viewPager);
 
-                mDB.addRecord(mMedia, mMediaServiceProviderList);
-                Toast.makeText(getApplicationContext(), "Success media added!", Toast.LENGTH_SHORT).show();
-            } else {
-                boolean removed = mDB.removeFavourite(mMedia.getId());
-                if (removed) {
-                    favoriteBtn.setText(ADD_FAV);
-                    Toast.makeText(getApplicationContext(), "Media successfully removed from favourites!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Media could not removed from favourites!", Toast.LENGTH_SHORT).show();
-                }
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable("data", mMedia);
+//        SummaryFragment summaryFragment = new SummaryFragment();
+//        ServiceFragment serviceFragment = new ServiceFragment();
+//        summaryFragment.setArguments(bundle);
+//        serviceFragment.setArguments(bundle);
+//        getFragmentManager().beginTransaction().add(R.id.overview_fragment, summaryFragment).commit();
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
 
             }
         });
+
+        Glide.with(getApplicationContext()).load(getString(R.string.image_tmdb_url_original) + mMedia.getImageURLBackdrop()).into(posterImgView);
+
+
+        favoriteBtn.setOnClickListener(view -> {
+            final View snackBarPos = findViewById(R.id.snackbar_pos);
+
+            if (!isFavourite) {
+                favoriteBtn.setImageResource(R.drawable.ic_baseline_favorite_red_24);
+
+                mDB.addRecord(mMedia, mMediaServiceProviderList);
+                Snackbar.make(snackBarPos, "Success media added!", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                isFavourite = true;
+            } else {
+                boolean removed = mDB.removeFavourite(mMedia.getId());
+                if (removed) {
+                    favoriteBtn.setImageResource(R.drawable.ic_baseline_favorite_grey_24);
+                    Snackbar.make(snackBarPos, "Media successfully removed from favourites!", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                } else {
+                    Snackbar.make(snackBarPos, "Media could not removed from favourites!", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+                isFavourite = false;
+            }
+        });
     }
+
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -114,45 +149,6 @@ public class MediaInfoActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         this.mMedia = savedInstanceState.getParcelable("data");
-    }
-
-    public void fetchMediaContentProviderList(int id) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.utelly_base_url))
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        Map<String, String> queryParametersMap = new HashMap<>();
-        queryParametersMap.put("source_id", String.valueOf(id));
-        queryParametersMap.put("source", "tmdb");
-
-        Map<String, String> headersMap = new HashMap<>();
-        headersMap.put("x-rapidapi-host", getString(R.string.host));
-        headersMap.put("x-rapidapi-key", getString(R.string.utelly_key));
-
-        UTellyAPI api = retrofit.create(UTellyAPI.class);
-        Call<MediaCollection> call = api.getMediaList(queryParametersMap, headersMap);
-        call.enqueue(new Callback<MediaCollection>() {
-            @Override
-            public void onResponse(Call<MediaCollection> call, Response<MediaCollection> response) {
-                if (response.isSuccessful()) {
-                    ArrayList<MediaContentProvider> mediaContentProviders = response.body().getMedia().getMediaContentProviderList();
-                    if (mediaContentProviders != null) {
-                        for (MediaContentProvider mc : mediaContentProviders) {
-                            mMediaServiceProviderList.add(mc.getMediaContentProviderName());
-                            mMediaServiceProviderUrlList.add(mc.getStreamURL());
-                        }
-                        services.setAdapter(mMediaServiceProviderAdapter);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MediaCollection> call, Throwable t) {
-                Log.d(TAG, "onFailure: " + t.getMessage());
-                t.getStackTrace();
-            }
-        });
     }
 
     private final BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
@@ -175,6 +171,8 @@ public class MediaInfoActivity extends AppCompatActivity {
         return false;
     };
 
-
-
+    @Override
+    public void Update(List<String> mMediaServiceProviderList) {
+        this.mMediaServiceProviderList = mMediaServiceProviderList;
+    }
 }

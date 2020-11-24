@@ -10,4 +10,7 @@
     <string name="nav_home">Home</string>
     <string name="favourites">Favourites</string>
     <string name="trending">Trending</string>
+
+    <string name="tab_1">Overview</string>
+    <string name="tab_2">Services</string>
 </resources>

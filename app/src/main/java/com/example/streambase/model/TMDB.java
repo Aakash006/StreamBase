@@ -19,23 +19,33 @@ public class TMDB implements Parcelable {
     @SerializedName("original_title")
     private String movieName;
 
+    @SerializedName("overview")
+    private String overview;
+
     @SerializedName("poster_path")
     private String imageURL;
+
+    @SerializedName("backdrop_path")
+    private String imageURLBackdrop;
 
     protected TMDB(Parcel in) {
         id = in.readInt();
         mediaType = in.readString();
         tvShowName = in.readString();
         movieName = in.readString();
+        overview = in.readString();
         imageURL = in.readString();
+        imageURLBackdrop = in.readString();
     }
 
-    public TMDB(int id, String mediaType, String tvShowName, String movieName, String imageURL) {
+    public TMDB(int id, String mediaType, String tvShowName, String movieName, String overview, String imageURL, String imageURLBackdrop) {
         this.id = id;
         this.mediaType = mediaType;
         this.tvShowName = tvShowName;
         this.movieName = movieName;
+        this.overview = overview;
         this.imageURL = imageURL;
+        this.imageURLBackdrop = imageURLBackdrop;
     }
 
     public static final Creator<TMDB> CREATOR = new Creator<TMDB>() {
@@ -54,8 +64,16 @@ public class TMDB implements Parcelable {
         return movieName;
     }
 
+    public String getOverview() {
+        return overview;
+    }
+
     public String getImageURL() {
         return imageURL;
+    }
+
+    public String getImageURLBackdrop() {
+        return imageURLBackdrop;
     }
 
     public int getId() {
@@ -81,6 +99,8 @@ public class TMDB implements Parcelable {
         parcel.writeString(mediaType);
         parcel.writeString(tvShowName);
         parcel.writeString(movieName);
+        parcel.writeString(overview);
         parcel.writeString(imageURL);
+        parcel.writeString(imageURLBackdrop);
     }
 }

@@ -34,7 +34,9 @@ public class StreamBaseDB extends SQLiteOpenHelper {
                 "media_type Text NOT NULL," +
                 "original_name Text," +
                 "original_title Text," +
+                "overview Text," +
                 "poster_path Text Not NULL," +
+                "poster_path_backdrop Text Not NULL," +
                 "providers Text);");
     }
 
@@ -50,7 +52,9 @@ public class StreamBaseDB extends SQLiteOpenHelper {
         contentValues.put("media_type", media.getMediaType());
         contentValues.put("original_name", media.getTvShowName());
         contentValues.put("original_title", media.getMovieName());
+        contentValues.put("overview", media.getOverview());
         contentValues.put("poster_path", media.getImageURL());
+        contentValues.put("poster_path_backdrop", media.getImageURLBackdrop());
         contentValues.put("providers", providers.toString().replace("[", "").replace("]", ""));
         sqLiteDatabase.insert(TABLE_NAME, "providers", contentValues);
     }
@@ -62,7 +66,7 @@ public class StreamBaseDB extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME + ";", null);
 
         while (cursor.moveToNext()) {
-            result.put(new TMDB(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4)), cursor.getString(5));
+            result.put(new TMDB(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6)), cursor.getString(7));
         }
         cursor.close();
         return result;

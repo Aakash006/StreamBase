@@ -22,4 +22,6 @@
         </item>
     </style>
 
+    <style name="Theme.TabbedActivity.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
 </resources>
