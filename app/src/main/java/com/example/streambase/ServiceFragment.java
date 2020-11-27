@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.streambase.adapters.MediaServiceProviderAdapter;
-import com.example.streambase.model.PageViewModel;
 import com.example.streambase.model.MediaCollection;
 import com.example.streambase.model.MediaContentProvider;
 import com.example.streambase.model.TMDB;
@@ -36,10 +35,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ServiceFragment extends Fragment {
     private static final String TAG = "ServiceFragment";
 
-    private static final String ARG_SECTION_NUMBER = "section_number";
-
-    private PageViewModel pageViewModel;
-
     ListView services;
     private MediaServiceProviderAdapter mMediaServiceProviderAdapter;
 
@@ -49,25 +44,45 @@ public class ServiceFragment extends Fragment {
 
     OnCallbackReceived mCallback;
 
-    public ServiceFragment(TMDB mMedia){
+    public ServiceFragment(){
+        Bundle args = new Bundle();
+        this.setArguments(args);
+    }
+
+    private void setMedia(TMDB mMedia){
         this.mMedia = mMedia;
     }
 
     public static ServiceFragment newInstance(TMDB mMedia) {
-        ServiceFragment fragment = new ServiceFragment(mMedia);
+        ServiceFragment fragment = new ServiceFragment();
+        fragment.setMedia(mMedia);
+
         Bundle args = new Bundle();
+        args.putParcelable("data", mMedia);
         fragment.setArguments(args);
+
         return fragment;
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(null);
+    }
+
 
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-
+        if(savedInstanceState != null){
+            super.onCreate(savedInstanceState);
+            this.mMedia = savedInstanceState.getParcelable("data");
+        }
 
         View root = inflater.inflate(R.layout.services_fragment, container, false);
         services = (ListView) root.findViewById(R.id.services);
+        services.setNestedScrollingEnabled(true);
+
         mMediaServiceProviderList = new ArrayList<>();
 
         mMediaServiceProviderList = new ArrayList<>();
@@ -78,6 +93,12 @@ public class ServiceFragment extends Fragment {
         mCallback.Update(mMediaServiceProviderList);
 
         return root;
+    }
+
+    @Override
+    public void onSaveInstanceState( Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("data", this.mMedia);
     }
 
     @Override

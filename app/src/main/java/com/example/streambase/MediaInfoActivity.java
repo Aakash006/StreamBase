@@ -2,8 +2,17 @@ package com.example.streambase;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ListView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.example.streambase.adapters.MediaInfoPagerAdapter;
 import com.example.streambase.adapters.MediaServiceProviderAdapter;
 import com.example.streambase.model.TMDB;
 import com.example.streambase.services.OnCallbackReceived;
@@ -12,17 +21,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.ListView;
-
-import com.example.streambase.adapters.MediaInfoPagerAdapter;
 
 import java.util.List;
 import java.util.Objects;
@@ -41,10 +39,19 @@ public class MediaInfoActivity extends AppCompatActivity implements OnCallbackRe
     private static final String REMOVE_FAV = "Remove Favourite";
     private static final String ADD_FAV = "Add to Favourite";
 
+    SummaryFragment summaryFragment;
+    ServiceFragment serviceFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.media_info_activity);
+
+        if (savedInstanceState != null) {
+            summaryFragment = (SummaryFragment) getSupportFragmentManager().getFragment(savedInstanceState, "summaryFragment");
+            serviceFragment = (ServiceFragment) getSupportFragmentManager().getFragment(savedInstanceState, "serviceFragment");
+
+        }
 
         mDB = new StreamBaseDB(getApplicationContext(), null, null, 0);
 
@@ -72,26 +79,15 @@ public class MediaInfoActivity extends AppCompatActivity implements OnCallbackRe
         ViewPager viewPager = findViewById(R.id.view_pager);
 
         MediaInfoPagerAdapter mediaInfoPagerAdapter = new MediaInfoPagerAdapter(getSupportFragmentManager(), getApplicationContext());
-        mediaInfoPagerAdapter.addFragment(SummaryFragment.newInstance(mMedia), getString(R.string.tab_1));
-        mediaInfoPagerAdapter.addFragment(ServiceFragment.newInstance(mMedia), getString(R.string.tab_2));
+        summaryFragment = SummaryFragment.newInstance(mMedia);
+        serviceFragment = ServiceFragment.newInstance(mMedia);
+        mediaInfoPagerAdapter.addFragment(summaryFragment, getString(R.string.tab_1));
+        mediaInfoPagerAdapter.addFragment(serviceFragment, getString(R.string.tab_2));
         viewPager.setAdapter(mediaInfoPagerAdapter);
-        viewPager.setOnTouchListener(null);
 
-        TabLayout tabLayout = findViewById(R.id.tabs);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setSelectedTabIndicatorColor(getColor(R.color.colorSecondary));
-//        TabItem overviewTab = findViewById(R.id.overview_tab);
-//        TabItem serviceTab = findViewById(R.id.service_tab);
-
-        tabLayout.setupWithViewPager(viewPager);
-
-//        Bundle bundle = new Bundle();
-//        bundle.putParcelable("data", mMedia);
-//        SummaryFragment summaryFragment = new SummaryFragment();
-//        ServiceFragment serviceFragment = new ServiceFragment();
-//        summaryFragment.setArguments(bundle);
-//        serviceFragment.setArguments(bundle);
-//        getFragmentManager().beginTransaction().add(R.id.overview_fragment, summaryFragment).commit();
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -143,6 +139,10 @@ public class MediaInfoActivity extends AppCompatActivity implements OnCallbackRe
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable("data", this.mMedia);
+        if (summaryFragment.isAdded() && serviceFragment.isAdded()) {
+            getSupportFragmentManager().putFragment(outState, "summaryFragment", summaryFragment);
+            getSupportFragmentManager().putFragment(outState, "serviceFragment", serviceFragment);
+        }
     }
 
     @Override

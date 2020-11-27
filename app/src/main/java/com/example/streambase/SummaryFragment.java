@@ -9,7 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.streambase.model.PageViewModel;
 import com.example.streambase.model.TMDB;
 
 /**
@@ -17,59 +16,58 @@ import com.example.streambase.model.TMDB;
  */
 public class SummaryFragment extends Fragment {
 
-    private static final String ARG_SECTION_NUMBER = "section_number";
-
-    private PageViewModel pageViewModel;
-
     private TMDB mMedia;
 
     private TextView summaryLabel;
 
-    public SummaryFragment(TMDB mMedia){
+    public SummaryFragment(){
+        Bundle args = new Bundle();
+        args.putParcelable("data", this.mMedia);
+        this.setArguments(args);
+    }
+
+    private void setMedia(TMDB mMedia){
         this.mMedia = mMedia;
     }
 
     public static SummaryFragment newInstance(TMDB mMedia) {
-        SummaryFragment fragment = new SummaryFragment(mMedia);
+        SummaryFragment fragment = new SummaryFragment();
+        fragment.setMedia(mMedia);
+
         Bundle args = new Bundle();
+        args.putParcelable("data", mMedia);
         fragment.setArguments(args);
+
         return fragment;
     }
 
-//
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        pageViewModel = new ViewModelProvider(this).get(PageViewModel.class);
-//        int index = 1;
-//        if (getArguments() != null) {
-//            index = getArguments().getInt(ARG_SECTION_NUMBER);
-//        }
-//        pageViewModel.setIndex(index);
-//
-//        mMedia = savedInstanceState.getParcelable("data");
-//    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        //mMedia = this.getArguments().getParcelable("data");
 
-        View root = inflater.inflate(R.layout.overview_fragment, container, false);
+        if(savedInstanceState != null){
+            super.onCreate(savedInstanceState);
+            this.mMedia = savedInstanceState.getParcelable("data");
+        }
+
+        View root = inflater.inflate(R.layout.summary_fragment, container, false);
         summaryLabel = root.findViewById(R.id.summary_label);
-//        pageViewModel.getText().observe(this.getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//
-//            }
-//        });
 
         summaryLabel.setText(mMedia.getOverview());
-
-
 
         return root;
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("data", this.mMedia);
+    }
 }
