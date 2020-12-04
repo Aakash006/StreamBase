@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         // UI Components
         Toolbar ActionBarToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(ActionBarToolbar);
-        getSupportActionBar().setTitle("Recommendations");
+        getSupportActionBar().setTitle("Trending");
 
         BottomNavigationView navigationView = findViewById(R.id.bottom_nav);
         navigationView.setSelectedItemId(R.id.nav_home);
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
                     mMediaList = (ArrayList<TMDB>) response.body().getMedia();
                     MediaAdapter mediaAdapter = new MediaAdapter(getApplicationContext(), mMediaList);
-                    mRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
+                    mRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
                     mRecyclerView.setAdapter(mediaAdapter);
                 } else {
                     Log.d(TAG, "onResponse: " + response.errorBody());

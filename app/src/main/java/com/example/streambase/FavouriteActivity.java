@@ -59,7 +59,7 @@ public class FavouriteActivity extends AppCompatActivity {
         mMediaList = new ArrayList<>(favorites.keySet());
 
         MediaAdapter mediaAdapter = new MediaAdapter(getApplicationContext(), mMediaList);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
         mRecyclerView.setAdapter(mediaAdapter);
     }
 
