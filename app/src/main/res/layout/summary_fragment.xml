@@ -24,7 +24,8 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/nester_scroll_view1">
 
         <TextView
             android:id="@+id/summary_label"

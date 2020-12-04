@@ -1,5 +1,6 @@
 package com.example.streambase;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,11 +37,14 @@ public class SearchActivity extends AppCompatActivity {
     private SearchView mSearchView;
     private ListView mListView;
     private TMDBList mMediaList;
+    private ArrayList<String> mSearchList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity);
+
+        mSearchList = new ArrayList<>();
 
         Toolbar actionBarToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(actionBarToolbar);
@@ -64,12 +70,12 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-        mListView.setVisibility(View.INVISIBLE);
         mListView.setOnItemClickListener((adapterView, view, i, l) -> {
             Intent intent = new Intent(SearchActivity.this, MediaInfoActivity.class);
             String selectedItem = adapterView.getItemAtPosition(i).toString();
             for (TMDB media : mMediaList.getMedia()) {
                 if ((media.getMovieName() != null && media.getMovieName().equals(selectedItem)) || (media.getTvShowName() != null && media.getTvShowName().equals(selectedItem))) {
+                    Log.d(TAG, "onCreate: " + media.getId());
                     intent.putExtra("data", media);
                     break;
                 }
@@ -82,14 +88,19 @@ public class SearchActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable("data", this.mMediaList);
-        outState.putInt("position", this.mListView.getFirstVisiblePosition());
+        outState.putSerializable("searchList", this.mSearchList);
+        outState.putParcelable("state", this.mListView.onSaveInstanceState());
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         this.mMediaList = savedInstanceState.getParcelable("data");
-        this.mListView.setSelectionFromTop(savedInstanceState.getInt("position"), 0);
+        this.mSearchList = (ArrayList<String>) savedInstanceState.getSerializable("searchList");
+
+        mListView.setVisibility(View.VISIBLE);
+        mListView.setAdapter(new SearchMediaAdapter(getApplicationContext(), 0, mSearchList));
+        mListView.onRestoreInstanceState(savedInstanceState.getParcelable("state"));
     }
 
     private void fetchMedia(String mediaName) {
@@ -109,12 +120,26 @@ public class SearchActivity extends AppCompatActivity {
             public void onResponse(Call<TMDBList> call, Response<TMDBList> response) {
                 if (response.isSuccessful()) {
                     mMediaList = response.body();
-                    List<String> moviesOrShows = new ArrayList<>();
+                    mSearchList.clear();
                     for (TMDB media : mMediaList.getMedia())
-                        moviesOrShows.add(media.getMediaType().equals("tv") ? media.getTvShowName() : media.getMovieName());
+                        mSearchList.add(media.getMediaType().equals("tv") ? media.getTvShowName() : media.getMovieName());
+                    List<String> tvList = mMediaList.getMedia()
+                            .stream()
+                            .filter(e -> e.getMediaType().equals("tv"))
+                            .map(TMDB::getTvShowName)
+                            .collect(Collectors.toList());
+
+                    List<String> movieList = mMediaList.getMedia()
+                            .stream()
+                            .filter(e -> e.getMediaType().equals("movie"))
+                            .map(TMDB::getMovieName)
+                            .collect(Collectors.toList());
+
+                    mSearchList = (ArrayList<String>) Stream.concat(tvList.stream(), movieList.stream())
+                            .collect(Collectors.toList());
 
                     mListView.setVisibility(View.VISIBLE);
-                    mListView.setAdapter(new SearchMediaAdapter(getApplicationContext(), 0, moviesOrShows));
+                    mListView.setAdapter(new SearchMediaAdapter(getApplicationContext(), 0, mSearchList));
                 }
             }
 
@@ -127,6 +152,7 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
+    @SuppressLint("NonConstantResourceId")
     private final BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
         switch (item.getItemId()) {
             case R.id.nav_home:

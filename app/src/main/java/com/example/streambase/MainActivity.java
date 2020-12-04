@@ -1,5 +1,6 @@
 package com.example.streambase;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,13 +31,15 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private RecyclerView mRecyclerView;
-    private Retrofit mRetrofit;
+    private MediaAdapter mMediaAdapter;
     private ArrayList<TMDB> mMediaList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mMediaList = new ArrayList<>();
 
         // UI Components
         Toolbar ActionBarToolbar = findViewById(R.id.toolbar);
@@ -47,29 +50,31 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setSelectedItemId(R.id.nav_home);
         navigationView.setOnNavigationItemSelectedListener(navListener);
 
+        mMediaAdapter = new MediaAdapter(getApplicationContext(), mMediaList);
 
         mRecyclerView = findViewById(R.id.trending_media);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+        mRecyclerView.setAdapter(mMediaAdapter);
 
-        mRetrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.tmdb_base_url))
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        getTrendingMedia();
+        if (savedInstanceState == null) {
+            getTrendingMedia();
+        }
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("mMediaList", mMediaList);
+        outState.putSerializable("mMediaList", mMediaList);
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        mMediaList = savedInstanceState.getParcelableArrayList("mMediaList");
+        this.mMediaList = (ArrayList<TMDB>) savedInstanceState.getSerializable("mMediaList");
+        mMediaAdapter.updateData(this.mMediaList);
     }
 
+    @SuppressLint("NonConstantResourceId")
     private final BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
         switch (item.getItemId()) {
             case R.id.nav_home:
@@ -89,21 +94,25 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public void getTrendingMedia() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.tmdb_base_url))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
         Map<String, String> queryParametersMap = new HashMap<>();
         queryParametersMap.put("api_key", getString(R.string.tmdb_key));
 
-        TMDBAPI api = mRetrofit.create(TMDBAPI.class);
+        TMDBAPI api = retrofit.create(TMDBAPI.class);
         Call<TMDBList> call = api.getTrendingList(queryParametersMap);
 
         call.enqueue(new Callback<TMDBList>() {
             @Override
             public void onResponse(Call<TMDBList> call, Response<TMDBList> response) {
                 if (response.isSuccessful()) {
-
                     mMediaList = (ArrayList<TMDB>) response.body().getMedia();
-                    MediaAdapter mediaAdapter = new MediaAdapter(getApplicationContext(), mMediaList);
+                    mMediaAdapter.updateData(mMediaList);
                     mRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
-                    mRecyclerView.setAdapter(mediaAdapter);
+                    mRecyclerView.setAdapter(mMediaAdapter);
                 } else {
                     Log.d(TAG, "onResponse: " + response.errorBody());
                 }

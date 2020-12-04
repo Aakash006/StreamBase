@@ -53,6 +53,10 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.ViewHolder> 
         return mediaList.size();
     }
 
+    public void updateData(List<TMDB> list) {
+        this.mediaList = list;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mediaName;
         public ImageView mediaImage;

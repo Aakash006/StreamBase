@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
 import com.example.streambase.model.TMDB;
@@ -17,7 +18,7 @@ import com.example.streambase.model.TMDB;
 public class SummaryFragment extends Fragment {
 
     private TMDB mMedia;
-
+    private NestedScrollView mNestedScrollView;
     private TextView summaryLabel;
 
     public SummaryFragment(){
@@ -52,13 +53,15 @@ public class SummaryFragment extends Fragment {
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             super.onCreate(savedInstanceState);
             this.mMedia = savedInstanceState.getParcelable("data");
         }
 
         View root = inflater.inflate(R.layout.summary_fragment, container, false);
         summaryLabel = root.findViewById(R.id.summary_label);
+
+        mNestedScrollView = root.findViewById(R.id.nester_scroll_view1);
 
         summaryLabel.setText(mMedia.getOverview());
 

@@ -30,29 +30,16 @@
             android:layout_marginTop="65dp"
             android:orientation="vertical">
 
-            <!--            <androidx.appcompat.widget.SearchView-->
-            <!--                android:id="@+id/search"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="55dp"-->
-            <!--                android:layout_marginLeft="10dp"-->
-            <!--                android:layout_marginRight="10dp"-->
-            <!--                android:background="@drawable/search_bar"-->
-            <!--                android:drawableStart="@drawable/ic_baseline_search_24"-->
-            <!--                android:drawablePadding="10dp"-->
-            <!--                android:hint="@string/search"-->
-            <!--                android:inputType=""-->
-            <!--                android:maxLines="1"-->
-            <!--                android:paddingStart="20sp"-->
-            <!--                android:textColor="#000000"-->
-            <!--                android:textColorHint="#000000"-->
-            <!--                android:textSize="20sp" />-->
             <androidx.appcompat.widget.SearchView
+                android:id="@+id/search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:background="#fff"
                 android:clickable="true"
-                app:queryHint="@string/search"
+                android:elevation="2dp"
                 app:iconifiedByDefault="false"
-                android:id="@+id/search" />
+                app:queryHint="@string/search" />
 
             <ListView
                 android:id="@+id/listOfResults"
@@ -61,7 +48,8 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="10dp"
-                android:background="@drawable/search_results" />
+                android:background="@drawable/search_results"
+                android:visibility="invisible" />
         </LinearLayout>
     </RelativeLayout>
 

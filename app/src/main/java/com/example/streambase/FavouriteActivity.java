@@ -20,7 +20,7 @@ public class FavouriteActivity extends AppCompatActivity {
     private static final String TAG = "FavouriteActivity";
 
     private RecyclerView mRecyclerView;
-
+    private MediaAdapter mMediaAdapter;
     private ArrayList<TMDB> mMediaList;
 
     @Override
@@ -36,9 +36,14 @@ public class FavouriteActivity extends AppCompatActivity {
         navigationView.setSelectedItemId(R.id.nav_fav);
         navigationView.setOnNavigationItemSelectedListener(navLlistener);
 
+        mMediaAdapter = new MediaAdapter(getApplicationContext(), mMediaList);
         mRecyclerView = findViewById(R.id.favorite_media);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+        mRecyclerView.setAdapter(mMediaAdapter);
 
-        getFavourites();
+        if (savedInstanceState == null) {
+            getFavourites();
+        }
     }
 
     @Override
@@ -51,6 +56,7 @@ public class FavouriteActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         this.mMediaList = savedInstanceState.getParcelableArrayList("data");
+        mMediaAdapter.updateData(this.mMediaList);
     }
 
     public void getFavourites() {
@@ -58,9 +64,9 @@ public class FavouriteActivity extends AppCompatActivity {
         HashMap<TMDB, String> favorites = streamBaseDB.getAllFavoriteMedia();
         mMediaList = new ArrayList<>(favorites.keySet());
 
-        MediaAdapter mediaAdapter = new MediaAdapter(getApplicationContext(), mMediaList);
+        mMediaAdapter.updateData(mMediaList);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
-        mRecyclerView.setAdapter(mediaAdapter);
+        mRecyclerView.setAdapter(mMediaAdapter);
     }
 
     private final BottomNavigationView.OnNavigationItemSelectedListener navLlistener = item -> {
